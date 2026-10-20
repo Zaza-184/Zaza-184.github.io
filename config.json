@@ -1,0 +1,149 @@
+{
+ "shop": "ZAZA بتاع ألعاب",
+ "phones": [
+  "01007407067",
+  "01024686143"
+ ],
+ "modded_prices": {},
+ "account_price": null,
+ "aliases": {
+  "batman": "Batman Arkham Knight",
+  "battel v": "Battlefield V",
+  "rid": "Ride",
+  "ride": "Ride",
+  "onrush": "Onrush",
+  "tom b": "Tomb Raider Definitive Edition",
+  "tomb": "Tomb Raider Definitive Edition",
+  "tomb raider": "Tomb Raider Definitive Edition",
+  "nfs bp": "Need for Speed Payback",
+  "nfs pay back": "Need for Speed Payback",
+  "need for speed payback": "Need for Speed Payback",
+  "need for speed heat": "Need for Speed Heat",
+  "call of duty ops3": "Call of Duty Black Ops III",
+  "call of duty ops4": "Call of Duty Black Ops 4",
+  "crash bandicoot 4": "Crash Bandicoot 4 Its About Time",
+  "crash bandicoot n-sane": "Crash Bandicoot N. Sane Trilogy",
+  "crash team ricing": "Crash Team Racing Nitro-Fueled",
+  "crash team": "Crash Team Racing Nitro-Fueled",
+  "detroit": "Detroit Become Human",
+  "dirt5": "DIRT 5",
+  "fc24": "EA SPORTS FC 24",
+  "fc25": "EA SPORTS FC 25",
+  "fc26": "EA SPORTS FC 26",
+  "fc27": "EA SPORTS FC 27",
+  "fifa22": "FIFA 22",
+  "fifa23": "FIFA 23",
+  "ghost recon": "Tom Clancys Ghost Recon Wildlands",
+  "god of war rangrock": "God of War Ragnarök",
+  "gta": "Grand Theft Auto V",
+  "horizon الغرب المحظور": "Horizon Forbidden West",
+  "injustice2": "Injustice 2",
+  "marvel avengers": "Marvels Avengers",
+  "mortal 11": "Mortal Kombat 11",
+  "over cooked 2": "Overcooked 2",
+  "pes 21": "eFootball PES 2021 SEASON UPDATE",
+  "pes18": "PRO EVOLUTION SOCCER 2018",
+  "pes19": "PRO EVOLUTION SOCCER 2019",
+  "pes20": "eFootball PES 2020",
+  "pes21": "eFootball PES 2021 SEASON UPDATE",
+  "reddead": "Red Dead Redemption 2",
+  "shadow of tomb raider": "Shadow of the Tomb Raider",
+  "spider man marvel": "Marvels Spider-Man",
+  "spiderman": "Marvels Spider-Man",
+  "spider man miles": "Marvels Spider-Man Miles Morales",
+  "tekken": "TEKKEN 7",
+  "the last of us 1": "The Last of Us Remastered",
+  "the last of us 2": "The Last of Us Part II",
+  "the witcher": "The Witcher 3 Wild Hunt – Game of the Year Edition",
+  "the wither": "The Witcher 3 Wild Hunt – Game of the Year Edition",
+  "uncharted 4": "Uncharted 4 A Thiefs End",
+  "uncharted collection": "Uncharted The Nathan Drake Collection",
+  "wwe 20": "WWE 2K20",
+  "wwe 23": "WWE 2K23",
+  "unravel": "Unravel",
+  "battel 4": "Battlefield 4",
+  "battel4": "Battlefield 4",
+  "battel field 4": "Battlefield 4",
+  "battel field 2042": "Battlefield 2042",
+  "call of duty modern warfare 2": "Call of Duty Modern Warfare II",
+  "call of duty ops6": "Call of Duty Black Ops 6",
+  "dishonred 2": "Dishonored 2",
+  "monster": "Monster Energy Supercross 2",
+  "mortal 1": "Mortal Kombat 1",
+  "mortal x": "Mortal Kombat X",
+  "mortal xl": "Mortal Kombat X",
+  "nfs": "Need for Speed",
+  "nfs unbound": "Need for Speed Unbound",
+  "plus": "PlayStation Plus",
+  "ry man": "Rayman Legends",
+  "ryman": "Rayman Legends",
+  "snack pass": "Snake Pass",
+  "spider man 2": "Marvels Spider-Man 2",
+  "wwe 22": "WWE 2K22",
+  "wwe 24": "WWE 2K24",
+  "wwe 25": "WWE 2K25",
+  "plant qw2": "Plants vs Zombies Garden Warfare 2",
+  "coldwar": "Call of Duty Cold War"
+ },
+ "genre_order": [
+  "أكشن ومغامرات",
+  "عالم مفتوح",
+  "تصويب وحرب",
+  "سباق",
+  "رياضة",
+  "قتال",
+  "رعب",
+  "أطفال وعائلة",
+  "قصصية وألغاز"
+ ],
+ "sections": [
+  {
+   "id": "modded",
+   "title": "PS4 معدّل",
+   "folder": "icons",
+   "price": 50,
+   "symbol": "△",
+   "color": "--tri"
+  },
+  {
+   "id": "ps5",
+   "title": "PS5 معدّل",
+   "folder": "icons-ps5",
+   "price": 50,
+   "symbol": "△",
+   "color": "--tri"
+  },
+  {
+   "id": "ps3",
+   "title": "PS3 معدّل",
+   "folder": "icons-ps3",
+   "price": 30,
+   "symbol": "△",
+   "color": "--tri"
+  }
+ ],
+ "originals": {
+  "title": "غير معدّل",
+  "file": "Originals.xlsx",
+  "types": [
+   "Off",
+   "Online",
+   "Pr"
+  ]
+ },
+ "account_tabs": [
+  {
+   "id": "accounts",
+   "title": "أكونتات PS4",
+   "platform": "PS4"
+  },
+  {
+   "id": "accounts5",
+   "title": "أكونتات PS5",
+   "platform": "PS5"
+  }
+ ],
+ "extra_icon_folders": [
+  "icons-extra"
+ ]
+}

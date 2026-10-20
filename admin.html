@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#030712"><title>لوحة تحكم ZAZA</title>
+<link href="https://fonts.googleapis.com/css2?family=Changa:wght@600;800&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030712;--p:#0a1224;--l:#15305c;--ps:#0070d1;--b:#33a6ff;--t:#eaf2ff;--m:#8aa3c7;--r:#ff5a67;--g:#3bd1a8;--eo:cubic-bezier(.23,1,.32,1)}
+*{box-sizing:border-box;margin:0}html{-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--t);font:16px/1.5 Tajawal,system-ui,sans-serif;padding-bottom:40px}
+header{position:sticky;top:0;z-index:5;background:#030712ee;backdrop-filter:blur(8px);border-bottom:1px solid var(--l);padding:10px 12px;display:grid;gap:8px;max-width:760px;margin:auto}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:8px}h1{font:800 18px Changa,sans-serif}
+.pub{font:800 15px Changa,sans-serif;color:#fff;background:linear-gradient(180deg,#0a7fe8,#00479b);border:1px solid #3aa0ff;border-radius:99px;padding:8px 16px;cursor:pointer;transition:transform .15s var(--eo)}.pub:active{transform:scale(.95)}.pub:disabled{opacity:.5}
+.pub b{background:#fff;color:#00479b;border-radius:99px;padding:0 7px;margin-inline-start:6px;font-size:13px}.pub b:empty{display:none}
+nav,.chs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav button,.chs button{flex:none;font:800 14px Changa,sans-serif;color:var(--m);background:var(--p);border:1px solid var(--l);border-radius:10px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+nav button[aria-selected=true],.chs button[aria-pressed=true]{color:#fff;background:#0b2a58;border-color:var(--b)}
+main{max-width:760px;margin:auto;padding:12px;display:grid;gap:10px}
+input,select,textarea{width:100%;background:var(--p);border:1px solid var(--l);border-radius:10px;color:var(--t);font:inherit;font-size:16px;padding:10px 12px}
+label{display:grid;gap:4px;color:var(--m);font-size:14px}
+.r{display:flex;gap:10px;align-items:center;background:var(--p);border:1px solid var(--l);border-radius:12px;padding:8px;animation:up .3s var(--eo) backwards}
+@keyframes up{from{opacity:0;transform:translateY(8px)}}
+.r img,.r .ph{width:46px;height:46px;border-radius:8px;object-fit:cover;flex:none;background:#0b1e3d}
+.r .n{flex:1;min-width:0;unicode-bidi:plaintext;font-weight:700;font-size:14px;overflow-wrap:anywhere}.r small{display:block;color:var(--g);font-weight:400}
+.r button{flex:none;min-height:44px;min-width:44px;border:1px solid var(--l);background:#0b1e3d;color:var(--t);border-radius:10px;font:700 13px Changa,sans-serif;cursor:pointer}
+.sw{padding:0 12px;color:#04241b!important;background:var(--g)!important;border-color:var(--g)!important}.sw.off{color:#fff!important;background:var(--r)!important;border-color:var(--r)!important}
+.go{font:800 16px Changa,sans-serif;color:#fff;background:var(--ps);border:0;border-radius:10px;padding:12px;cursor:pointer}
+.note{color:var(--m);font-size:13px;line-height:1.7}.note b{color:var(--t)}
+.ts{position:fixed;left:16px;right:16px;bottom:24px;max-width:420px;margin:auto;padding:14px;border-radius:12px;background:#0f6b55;color:#fff;text-align:center;font-weight:700;z-index:9;animation:up .25s var(--eo)}
+.ts.e{background:#9b2c36}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<header><div class="hd"><h1>لوحة تحكم ZAZA</h1><button class="pub" id="pub">نشر التعديلات<b id="dc"></b></button></div>
+<nav id="nav"><button data-v="stock">المخزون والفيديو</button><button data-v="add">إضافة لعبة</button><button data-v="set">الإعدادات</button></nav></header>
+<main id="m"></main><div class="ts" id="ts" hidden></div>
+<script>
+const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+let cfg={};try{cfg=JSON.parse(localStorage.zaza_admin||'{}')}catch(e){}
+const hn=location.hostname.split('.');
+if(!cfg.repo&&hn[1]=='github'){const p=location.pathname.split('/')[1];cfg.repo=hn[0]+'/'+(p&&!/\./.test(p)?p:hn[0]+'.github.io')}
+cfg.branch=cfg.branch||'main';
+let C,L={oos:{},pstock:{},videos:{},added:[]},pend=[],dirty=0,view='stock',sec='',q='',cur=[];
+const H=()=>({Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github+json'}),U=p=>`https://api.github.com/repos/${cfg.repo}/contents/${p}`;
+const b64=s=>btoa(unescape(encodeURIComponent(s)));
+function toast(t,e){const x=$('#ts');x.textContent=t;x.className='ts'+(e?' e':'');x.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>x.hidden=true,e?5000:3200)}
+async function put(p,content,msg){let sha;const g=await fetch(U(p)+'?ref='+cfg.branch,{headers:H()});if(g.ok)sha=(await g.json()).sha;
+  const r=await fetch(U(p),{method:'PUT',headers:H(),body:JSON.stringify({message:msg,content,branch:cfg.branch,sha})});if(!r.ok)throw Error((await r.json().catch(()=>({}))).message||r.status)}
+async function loadLive(){try{let j;
+  if(cfg.token&&cfg.repo){const g=await fetch(U('data/live.json')+'?ref='+cfg.branch+'&t='+Date.now(),{headers:H()});if(g.ok)j=JSON.parse(decodeURIComponent(escape(atob((await g.json()).content.replace(/\n/g,'')))))}
+  else{const g=await fetch('data/live.json?'+Date.now());if(g.ok)j=await g.json()}
+  if(j)L={oos:{},pstock:{},videos:{},added:[],...j}}catch(e){}}
+const key=(t,i)=>t.kind=='accounts'||t.kind=='products'?i.name:i.title,
+ ic=i=>i.icon||(i.items&&i.items[0]&&i.items[0].icon)||'',
+ vk=(t,i)=>t.kind=='accounts'?(i.items.length==1?i.items[0].title:''):t.kind=='products'?'':i.title,
+ stock=(t,i)=>{const k=key(t,i);return t.kind=='products'?(k in L.pstock?L.pstock[k]:i.in_stock):!(L.oos[t.id]||[]).includes(k)};
+function items(t){const l=t.kind=='modded'?[...C.games[t.id]]:t.kind=='originals'?[...C.originals]:t.kind=='accounts'?[...C.accts[t.id]]:[...C.products];
+  if(t.kind=='modded')L.added.filter(g=>g.tab==t.id&&!l.some(x=>x.title==g.title)).reverse().forEach(g=>l.unshift({...g,_new:1}));return l}
+const ytid=v=>{const m=String(v).match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/)||String(v).trim().match(/^([\w-]{11})$/);return m?m[1]:''};
+function d(){dirty++;$('#dc').textContent=dirty;$('#pub').disabled=false}
+function go(v){view=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v==v));
+  if(v=='stock')drawStock();else if(v=='add')drawAdd();else drawSet()}
+function drawStock(){const T=C.tabs;sec=sec||(T[0]||{}).id;
+  $('#m').innerHTML=`<div class="chs">${T.map(t=>`<button data-sec="${t.id}" aria-pressed="${t.id==sec}">${E(t.title)}</button>`).join('')}</div><input id="q" type="search" placeholder="دوّر…" dir="auto" value="${E(q)}"><div id="ls" style="display:grid;gap:8px"></div>`;
+  $('#q').oninput=e=>{q=e.target.value;list()};list()}
+function list(){const t=C.tabs.find(x=>x.id==sec);if(!t)return;const s=q.trim().toLowerCase();
+  cur=items(t).filter(i=>key(t,i).toLowerCase().includes(s));
+  $('#ls').innerHTML=cur.map((i,n)=>{const on=stock(t,i),v=vk(t,i),hv=v&&(L.videos[v]||i.video),im=ic(i);
+   return `<div class="r">${im?`<img loading="lazy" src="${E(encodeURI(im))}" alt="">`:'<div class="ph"></div>'}<div class="n" dir="auto">${E(key(t,i))}${i._new?'<small>مضافة من اللوحة</small>':''}</div>${v?`<button data-a="v" data-n="${n}" title="فيديو" style="${hv?'border-color:var(--g)':''}">🎬</button>`:''}${i._new?`<button data-a="x" data-n="${n}" title="حذف">✕</button>`:''}<button class="sw${on?'':' off'}" data-a="t" data-n="${n}">${on?'متوفر':'نفذت'}</button></div>`}).join('')||'<p class="note">مفيش نتيجة</p>'}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.sec){sec=b.dataset.sec;drawStock();return}
+  if(b.dataset.v&&!b.dataset.a){go(b.dataset.v);return}
+  const t=C.tabs.find(x=>x.id==sec),i=cur[+b.dataset.n],a=b.dataset.a;if(!a||!i)return;
+  if(a=='t'){const k=key(t,i),on=stock(t,i);
+    if(t.kind=='products'){L.pstock[k]=!on;if(L.pstock[k]===i.in_stock)delete L.pstock[k]}
+    else{const x=L.oos[t.id]=L.oos[t.id]||[];on?x.push(k):x.splice(x.indexOf(k),1)}d();list()}
+  else if(a=='v'){const k=vk(t,i),o=prompt('الصق لينك يوتيوب الخاص بتريلر "'+k+'" (سيبه فاضي لو عايز تمسحه):',L.videos[k]||i.video||'');if(o===null)return;
+    if(!o.trim()){delete L.videos[k]}else{const id=ytid(o);if(!id)return toast('اللينك ده مش لينك يوتيوب صحيح',1);L.videos[k]=id}d();list()}
+  else if(a=='x'&&confirm('حذف "'+i.title+'" من الموقع؟')){L.added=L.added.filter(g=>!(g.tab==t.id&&g.title==i.title));pend=pend.filter(f=>f.path!=i.icon);d();list()}});
+function drawAdd(){const T=C.tabs.filter(t=>t.kind=='modded');
+  $('#m').innerHTML=`<form id="f" style="display:grid;gap:10px"><label>اسم اللعبة (زي ما هيظهر)<input name="title" required dir="auto"></label><label>القسم<select name="tab">${T.map(t=>`<option value="${t.id}">${E(t.title)}</option>`).join('')}</select></label><label>صورة الغلاف<input name="img" type="file" accept="image/*" required></label><label>السعر (اختياري)<input name="price" type="number" inputmode="numeric" min="0"></label><label>التصنيف (افصل بفاصلة)<input name="genres" list="gl" dir="auto"></label><datalist id="gl">${(C.genres||[]).map(g=>`<option value="${E(g)}">`).join('')}</datalist><label>عدد اللاعبين<input name="players" dir="auto"></label><label>نبذة قصيرة<textarea name="blurb" rows="2" dir="auto"></textarea></label><label>لينك التريلر (يوتيوب)<input name="video" dir="ltr"></label><button class="go">إضافة للقائمة</button><p class="note">اللعبة بتتضاف هنا وبتظهر في الموقع بعد ما تدوس <b>نشر التعديلات</b>.</p></form>`;
+  $('#f').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),title=f.get('title').trim(),tab=f.get('tab');
+    if(items(C.tabs.find(t=>t.id==tab)).some(x=>x.title.toLowerCase()==title.toLowerCase()))return toast('اللعبة دي موجودة بالفعل',1);
+    const vd=f.get('video').trim(),vid=vd?ytid(vd):'';if(vd&&!vid)return toast('لينك اليوتيوب غير صحيح',1);
+    try{const c=await cover(f.get('img')),path='icons-extra/'+title.replace(/[\\/:*?"<>|]/g,'')+'.webp';
+      pend=pend.filter(x=>x.path!=path);pend.push({path,content:c});
+      L.added.push({tab,title,icon:path,price:+f.get('price')||null,genres:f.get('genres').split(/[,،+]/).map(x=>x.trim()).filter(Boolean),players:f.get('players').trim(),blurb:f.get('blurb').trim(),video:vid});
+      d();e.target.reset();toast('تمت الإضافة — اضغط نشر التعديلات')}catch(x){toast('مشكلة في الصورة',1)}}}
+const cover=f=>new Promise((ok,no)=>{const i=new Image;i.onload=()=>{const c=document.createElement('canvas');c.width=c.height=512;const s=Math.min(i.width,i.height);c.getContext('2d').drawImage(i,(i.width-s)/2,(i.height-s)/2,s,s,0,0,512,512);c.toBlob(b=>{const r=new FileReader;r.onload=()=>ok(r.result.split(',')[1]);r.readAsDataURL(b)},'image/webp',.85)};i.onerror=no;i.src=URL.createObjectURL(f)});
+function drawSet(){$('#m').innerHTML=`<label>GitHub Token<input id="tk" type="password" dir="ltr" autocomplete="off" value="${E(cfg.token||'')}"></label><label>المستودع (owner/repo)<input id="rp" dir="ltr" value="${E(cfg.repo||'')}"></label><label>الفرع<input id="br" dir="ltr" value="${E(cfg.branch)}"></label><button class="go" id="sv">حفظ</button><p class="note">التوكن هو "المفتاح": من غيره اللوحة بتعرض بس ومش بتنشر. اعمله من GitHub ← Settings ← Developer settings ← Fine-grained tokens، على مستودع الموقع بس، وصلاحية <b>Contents: Read and write</b>. بيتحفظ على جهازك أنت بس، فاستخدم اللوحة من جهازك الشخصي.</p>`;
+  $('#sv').onclick=async()=>{cfg={token:$('#tk').value.trim(),repo:$('#rp').value.trim(),branch:$('#br').value.trim()||'main'};localStorage.zaza_admin=JSON.stringify(cfg);await loadLive();toast('تم الحفظ');go('stock')}}
+$('#pub').onclick=async()=>{if(!cfg.token||!cfg.repo){toast('حط التوكن الأول من الإعدادات',1);return go('set')}
+  const b=$('#pub');b.disabled=true;try{for(const f of pend)await put(f.path,f.content,'غلاف: '+f.path);await put('data/live.json',b64(JSON.stringify(L,null,1)),'تحديث من لوحة التحكم');
+    pend=[];dirty=0;$('#dc').textContent='';toast('تم النشر ✓ — التعديلات بتظهر في الموقع خلال دقيقة تقريبًا')}catch(e){b.disabled=false;toast('فشل النشر: '+e.message,1)}};
+onbeforeunload=e=>{if(dirty){e.preventDefault();return ''}};
+(async()=>{await new Promise(r=>{const s=document.createElement('script');s.src='data/catalog.js?'+Date.now();s.onload=s.onerror=r;document.head.append(s)});
+  C=window.CATALOG||{tabs:[],games:{},originals:[],accts:{},products:[],genres:[]};await loadLive();$('#pub').disabled=true;go(cfg.token?'stock':'set')})();
+</script></body></html>
