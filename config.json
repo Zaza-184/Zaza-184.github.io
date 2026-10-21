@@ -146,5 +146,9 @@
  "extra_icon_folders": [
   "icons-extra"
  ],
- "site_url": "https://zaza-184.github.io/"
+ "site_url": "https://zaza-184.github.io/",
+ "phone_names": {
+  "01007407067": "Zaza",
+  "01024686143": "هشام"
+ }
 }

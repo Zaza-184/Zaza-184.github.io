@@ -126,7 +126,6 @@ button,a,.tile{touch-action:manipulation}
 .hero img{animation:pop .7s var(--eo) backwards}
 .tile{animation:pop .5s var(--eo) backwards;animation-delay:calc(var(--i,0)*60ms);transition:transform .2s var(--eo),border-color .2s,box-shadow .2s}
 .tile svg{animation:flt 3.2s ease-in-out infinite;animation-delay:calc(var(--i,0)*-.45s)}
-.an .card{animation:up .45s var(--eo) backwards;animation-delay:calc(min(var(--i,0),11)*45ms)}
 .card{transition:transform .2s var(--eo),border-color .2s,box-shadow .2s}
 .ic img{transition:transform .5s var(--eo),opacity .35s}.ic img:not(.ld){opacity:0}
 .add,.shr,.fab,.back,.flt,.tabs button,.chips button,.fl button{transition:transform .15s var(--eo),background-color .2s,border-color .2s}
@@ -136,10 +135,24 @@ dialog[open]{animation:sheet .3s var(--ed)}dialog[open]::backdrop{animation:fi .
 .fab{animation:pop .35s var(--eo)}.tabs button[aria-selected=true] svg{animation:pop .35s var(--eo)}
 .card[data-oos] .ic>*{filter:grayscale(1) opacity(.5)}.card[data-oos] .ic::after{content:"نفذت الكمية";position:absolute;inset-inline:0;bottom:0;z-index:3;background:#ff5a67e6;color:#fff;text-align:center;font:800 13px Changa,sans-serif;padding:4px}
 @media(prefers-reduced-motion:reduce){*,::before,::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+#ld{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:radial-gradient(circle at 50% 45%,#0b1d3f,#030712 70%);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s ease,visibility 0s .2s}
+#ld.on,.intro #ld{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .18s ease}
+.intro #ld{animation:ldx .01s 4s forwards}@keyframes ldx{to{opacity:0;visibility:hidden}}
+#ld svg{width:min(66vw,300px);overflow:visible;filter:drop-shadow(0 0 14px #33a6ff66)}
+.lt{font:800 100px Changa,sans-serif;fill:transparent;stroke:#33a6ff;stroke-width:2.2;stroke-linejoin:round;stroke-dasharray:420;stroke-dashoffset:420}
+#ld.on .lt{animation:dr .55s var(--eo) .08s forwards,fl .3s ease .45s forwards}
+.intro #ld .lt{animation:dr .95s var(--eo) .15s forwards,fl .4s ease .85s forwards}
+@keyframes dr{to{stroke-dashoffset:0}}@keyframes fl{to{fill:#33a6ff}}
+#sp{position:fixed;top:0;inset-inline:0;height:3px;z-index:60;background:linear-gradient(90deg,#0a7fe8,#33a6ff,#3bd1a8);transform-origin:100% 50%;transform:scaleX(0);pointer-events:none}
+.tile{position:relative;overflow:hidden}
+.rp{position:absolute;border-radius:50%;pointer-events:none;z-index:4;background:radial-gradient(circle,#33a6ff66,transparent 65%);transform:scale(0);animation:rp .6s var(--eo) forwards}@keyframes rp{to{transform:scale(1);opacity:0}}
+.card.rv{opacity:0}.card.show{animation:up .45s var(--eo) backwards}
 [hidden]{display:none!important}
 </style>
+<script>try{if(!sessionStorage.zi)document.documentElement.classList.add('intro')}catch(e){}</script>
 </head>
 <body>
+<div id="ld" aria-hidden="true"><svg viewBox="0 0 340 130"><text class="lt" x="170" y="96" text-anchor="middle">ZAZA</text></svg></div><div id="sp"></div>
 <header class="hero" id="hero"><img src="assets/logo.webp" alt="ZAZA بتاع ألعاب"><h1 class="tag">كل ما تحتاجه في عالم البلايستيشن</h1><p>ألعاب وأكونتات وملحقات، وطلبك على واتساب</p><nav class="wa" id="wa"></nav></header>
 <section class="home" id="home" aria-label="الأقسام"></section>
 <div class="bar" id="bar" hidden>
@@ -161,7 +174,7 @@ const C=window.CATALOG,$=s=>document.querySelector(s),E=s=>String(s??'').replace
 /* تعديلات المالك من لوحة التحكم (data/live.json): نفاد الكمية، ألعاب مضافة، فيديوهات */
 const oos=h=>h.replace(/(<button class="add"[^>]*>[^<]*<\/button>)+/,'<button class="add" disabled>نفذت الكمية</button>').replace('<article ','<article data-oos ');
 (function(){const S=L.oos||{},VD=L.videos||{},PS=L.pstock||{},HD=L.hide||{},ED=L.edit||{},CF=L.cfg||{},has=(m,t,k)=>(m[t]||[]).includes(k);
-if((CF.phones||[]).length)C.phones=CF.phones;
+if((CF.phones||[]).length){C.phones=CF.phones;C.pnames=CF.pnames||{}}
 C.tabs.forEach(t=>{const np=(CF.secprice||{})[t.id];if(np&&t.kind=='modded')C.games[t.id].forEach(g=>{if(g.price===t.price)g.price=np})});
 const ap=(t,g,kf,img)=>{const k=g._k=g._k||g[kf],e=(ED[t]||{})[k];if(VD[g.title])g.video=VD[g.title];
  if(e){for(const f of['price','blurb','genres','players','video','cat','badges','prices','items'])if(f in e)g[f]=e[f];if(e.img)g[img]=e.img;if(e.dn)g[kf]=e.dn;else if(e.items&&kf=='name')g.name=e.items.map(x=>x.title).join(' + ')}
@@ -181,8 +194,9 @@ const vis=(t,l)=>l.filter(g=>!has(HD,t,g._k));
 Object.keys(C.games).forEach(t=>C.games[t]=vis(t,C.games[t]));C.originals=vis('originals',C.originals);
 Object.keys(C.accts).forEach(t=>C.accts[t]=vis(t,C.accts[t]));C.products=vis('products',C.products);
 C.tabs=C.tabs.filter(t=>(t.kind=='modded'?C.games[t.id]:t.kind=='originals'?C.originals:t.kind=='accounts'?C.accts[t.id]:C.products).length)})();
+const pn=p=>(C.pnames||{})[p]||p;
 const wa=(p,t)=>`https://wa.me/2${p}?text=${encodeURIComponent(t)}`;
-$('#wa').innerHTML=C.phones.map(p=>`<a href="https://wa.me/2${p}">واتساب ${p}</a>`).join('');
+$('#wa').innerHTML=C.phones.map(p=>`<a href="https://wa.me/2${p}">واتساب ${pn(p)}</a>`).join('');
 const price=p=>p?`<div class="pr">${p} <small>ج</small></div>`:`<div class="pr"><small>اسأل عن السعر</small></div>`;
 const tile=i=>i.icon?`<img loading="lazy" src="${encodeURI(i.icon)}" alt="${E(i.title)}">`:`<div class="ph">${E(i.title.replace(/[^A-Za-z0-9\u0600-\u06ff ]/g,'').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase())}</div>`;
 function icon(items){const n=items.length;if(n==1)return `<div class="ic n1">${tile(items[0])}</div>`;const r=n<=4?n:n<=6?3:4,b=items[0].icon?`--b:url('${encodeURI(items[0].icon)}');`:'';return `<div class="ic mg" style="${b}--r:${r}">${items.map(tile).join('')}</div>`}
@@ -191,11 +205,11 @@ let cart=[];try{cart=JSON.parse(localStorage.getItem('zaza_cart')||'[]')}catch(e
 const R={},save=()=>{try{localStorage.setItem('zaza_cart',JSON.stringify(cart))}catch(e){}},inCart=id=>cart.some(x=>x.id==id);
 const line=x=>x.name+(x.label?' ('+x.label+')':'');
 function addBtn(name,label,pr,opt){const id=tab+'|'+name+'|'+(opt||''),t0=opt?`＋ ${opt} · ${pr} ج`:'＋ أضف للسلة',t1=opt?`✓ ${opt} في السلة`:'✓ في السلة';R[id]={id,name,label:opt?(label?label+' - ':'')+opt:label,price:pr};return `<button class="add" data-id="${E(id)}" data-t0="${E(t0)}" data-t1="${E(t1)}" aria-pressed="${inCart(id)}">${E(inCart(id)?t1:t0)}</button>`}
-function sync(){document.querySelectorAll('.ic img:not(.ld)').forEach(m=>{const f=()=>m.classList.add('ld');m.complete?f():(m.addEventListener('load',f,{once:true}),m.addEventListener('error',f,{once:true}))});document.querySelectorAll('.add[data-id]').forEach(b=>{const on=inCart(b.dataset.id);b.setAttribute('aria-pressed',on);b.textContent=on?b.dataset.t1:b.dataset.t0});$('#fc').textContent=cart.length;$('#fab').hidden=!cart.length}
+function sync(){reveal();document.querySelectorAll('.ic img:not(.ld)').forEach(m=>{const f=()=>m.classList.add('ld');m.complete?f():(m.addEventListener('load',f,{once:true}),m.addEventListener('error',f,{once:true}))});document.querySelectorAll('.add[data-id]').forEach(b=>{const on=inCart(b.dataset.id);b.setAttribute('aria-pressed',on);b.textContent=on?b.dataset.t1:b.dataset.t0});$('#fc').textContent=cart.length;$('#fab').hidden=!cart.length}
 function msg(){const all=cart.every(x=>x.price),t=cart.reduce((s,x)=>s+(+x.price||0),0);return 'السلام عليكم، عايز أطلب:\n'+cart.map((x,i)=>`${i+1}) ${line(x)}${x.price?' - '+x.price+' ج':''}`).join('\n')+(all&&cart.length?`\nالإجمالي: ${t} ج`:'')}
 function drawCart(){const d=$('#cd');if(!cart.length){d.innerHTML='<h3>السلة فاضية</h3><p class="hint">ضيف الألعاب اللي عايزها من الأقسام وارجع هنا.</p><div class="ft"><button id="cx">تمام</button></div>';return}
   const all=cart.every(x=>x.price),t=cart.reduce((s,x)=>s+(+x.price||0),0);
-  d.innerHTML=`<h3>سلتك (${cart.length})</h3><ul class="cl">${cart.map(x=>`<li><span dir="auto">${E(line(x))}</span>${x.price?`<em>${x.price} ج</em>`:''}<button data-rm="${E(x.id)}" aria-label="إزالة">×</button></li>`).join('')}</ul>${all?`<div class="tot">الإجمالي: ${t} ج</div>`:'<div class="hint">الأسعار اللي مش مكتوبة هنأكدها معاك على واتساب.</div>'}<div class="hint">اختار رقم الواتساب اللي هتبعت عليه الطلب:</div><div class="sd">${C.phones.map(p=>`<a class="send" target="_blank" rel="noopener" href="${wa(p,msg())}">ابعت الطلب على ${p}</a>`).join('')}</div><div class="ft"><button class="clr" id="cc">فضّي السلة</button><button class="gh" id="cx">إغلاق</button></div>`}
+  d.innerHTML=`<h3>سلتك (${cart.length})</h3><ul class="cl">${cart.map(x=>`<li><span dir="auto">${E(line(x))}</span>${x.price?`<em>${x.price} ج</em>`:''}<button data-rm="${E(x.id)}" aria-label="إزالة">×</button></li>`).join('')}</ul>${all?`<div class="tot">الإجمالي: ${t} ج</div>`:'<div class="hint">الأسعار اللي مش مكتوبة هنأكدها معاك على واتساب.</div>'}<div class="hint">اختار رقم الواتساب اللي هتبعت عليه الطلب:</div><div class="sd">${C.phones.map(p=>`<a class="send" target="_blank" rel="noopener" href="${wa(p,msg())}">ابعت الطلب على ${pn(p)}</a>`).join('')}</div><div class="ft"><button class="clr" id="cc">فضّي السلة</button><button class="gh" id="cx">إغلاق</button></div>`}
 $('#fab').onclick=()=>{drawCart();$('#cd').showModal()};
 $('#cd').onclick=e=>{const t=e.target,rm=t.closest('[data-rm]');if(rm){cart=cart.filter(x=>x.id!=rm.dataset.rm);save();sync();drawCart()}else if(t.id=='cc'){cart=[];save();sync();drawCart()}else if(t.id=='cx'||t==$('#cd'))$('#cd').close()};
 document.addEventListener('click',e=>{const b=e.target.closest('.add[data-id]');if(!b)return;const id=b.dataset.id,i=cart.findIndex(x=>x.id==id);i<0?cart.push(R[id]):cart.splice(i,1);save();sync()});
@@ -223,7 +237,7 @@ function draw(a=1){
   const q=$('#q').value.trim().toLowerCase(),v=V[tab],all=v.list(),G=genres(),act=sel.size>0;
   $('#flt').hidden=!G.length;$('#fb').textContent=sel.size||'';
   const l=all.filter(g=>((g.title||g.name||'')+' '+v.key(g)).toLowerCase().includes(q)&&(!act||(g.genres||[]).some(x=>sel.has(x)))).sort((a,b)=>!!a.oos-!!b.oos);
-  CUR=l;$('#out').className=a?'an':'';$('#cnt').textContent=(q||act)?`${l.length} من ${all.length}`:`${all.length} ${v.kind=='products'?'منتج':'لعبة'}`;
+  CUR=l;ANIM=a;$('#cnt').textContent=(q||act)?`${l.length} من ${all.length}`:`${all.length} ${v.kind=='products'?'منتج':'لعبة'}`;
   if(v.kind=='products'&&!q){const m={};l.forEach(g=>(m[g.cat]=m[g.cat]||[]).push(g));
     $('#out').innerHTML=Object.keys(m).map(c=>`<h2>${E(c)}</h2><div class="grid">${m[c].map(v.html).join('')}</div>`).join('')}
   else $('#out').innerHTML=`<div class="grid">${l.map((g,i)=>deco(g.oos?oos(v.html(g)):v.html(g),i)).join('')||'<p class="empty">مفيش نتيجة</p>'}</div>`;
@@ -270,7 +284,15 @@ $('#fclr').onclick=()=>{sel.clear();drawFilter();draw()};$('#fok').onclick=()=>$
 $('#fd').onclick=e=>{if(e.target==$('#fd'))$('#fd').close()};
 document.addEventListener('click',e=>{const b=e.target.closest('.tile,#tabs button');if(b)location.hash=b.dataset.t});
 $('#back').onclick=()=>{location.hash=''};
-addEventListener('hashchange',route);
+addEventListener('hashchange',()=>{const n=location.hash.slice(1).split('/')[0];(V[n]?n:'')!==tab?veil(route):route()});
+/* لمسات الحركة: شاشة ZAZA (دخول + تنقل)، ظهور الكروت مع السكرول، شريط تقدّم، تموّج عند الضغط */
+let ANIM=1;const LD=$('#ld'),RM=matchMedia('(prefers-reduced-motion:reduce)').matches,HR=document.documentElement;let vt;
+const veil=fn=>{if(RM)return fn();clearTimeout(vt);LD.classList.remove('on');void LD.offsetWidth;LD.classList.add('on');setTimeout(fn,190);vt=setTimeout(()=>LD.classList.remove('on'),800)};
+if(HR.classList.contains('intro')){try{sessionStorage.zi=1}catch(e){}setTimeout(()=>HR.classList.remove('intro'),RM?0:Math.max(250,1450-performance.now()))}
+const io='IntersectionObserver' in window?new IntersectionObserver(es=>{let k=0;es.forEach(en=>{if(en.isIntersecting){const c=en.target;io.unobserve(c);c.style.animationDelay=Math.min(k++,5)*55+'ms';c.classList.remove('rv');c.classList.add('show')}})},{rootMargin:'0px 0px -6% 0px',threshold:.05}):null;
+function reveal(){document.querySelectorAll('#out .card:not([data-rv])').forEach(c=>{c.dataset.rv=1;if(ANIM&&io){c.classList.add('rv');io.observe(c)}})}
+let sf=0;addEventListener('scroll',()=>{if(sf)return;sf=requestAnimationFrame(()=>{sf=0;if(document.body.classList.contains('lk'))return;const m=HR.scrollHeight-innerHeight;$('#sp').style.transform='scaleX('+(m>0?Math.min(scrollY/m,1):0)+')'})},{passive:true});
+document.addEventListener('pointerdown',e=>{const t=e.target.closest('.tile,.card');if(!t||e.target.closest('.add,.shr'))return;const r=t.getBoundingClientRect(),s=Math.max(r.width,r.height)*1.6,x=document.createElement('i');x.className='rp';x.style.cssText=`width:${s}px;height:${s}px;left:${e.clientX-r.left-s/2}px;top:${e.clientY-r.top-s/2}px`;t.append(x);x.addEventListener('animationend',()=>x.remove())},{passive:true});
 /* قفل سكرول الصفحة طول ما أي نافذة مفتوحة */
 let sy=0;const lk=()=>{const b=document.body,o=document.querySelector('dialog[open]');if(o&&!b.classList.contains('lk')){sy=scrollY;b.style.top=-sy+'px';b.classList.add('lk')}else if(!o&&b.classList.contains('lk')){b.classList.remove('lk');b.style.top='';scrollTo(0,sy)}};
 const sm=HTMLDialogElement.prototype.showModal;HTMLDialogElement.prototype.showModal=function(){sm.call(this);lk();this.addEventListener('close',lk,{once:true})};

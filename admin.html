@@ -1,12 +1,14 @@
 <!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#030712"><title>لوحة تحكم ZAZA</title>
+<link rel="icon" href="assets/icon.png"><link rel="apple-touch-icon" href="assets/icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Changa:wght@600;800&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#030712;--p:#0a1224;--l:#15305c;--ps:#0070d1;--b:#33a6ff;--t:#eaf2ff;--m:#8aa3c7;--r:#ff5a67;--g:#3bd1a8;--eo:cubic-bezier(.23,1,.32,1)}
 *{box-sizing:border-box;margin:0}html{-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}
 body{background:var(--bg);color:var(--t);font:16px/1.5 Tajawal,system-ui,sans-serif;padding-bottom:40px}
 header{position:sticky;top:0;z-index:5;background:#030712ee;backdrop-filter:blur(8px);border-bottom:1px solid var(--l);padding:10px 12px;display:grid;gap:8px;max-width:760px;margin:auto}
-.hd{display:flex;align-items:center;justify-content:space-between;gap:8px}.hd div{display:flex;gap:6px}h1{font:800 18px Changa,sans-serif}h3{font:800 18px Changa,sans-serif}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:8px}.hd div{display:flex;gap:6px}.hd .br{gap:10px;align-items:center}.br img{width:44px;height:44px;border-radius:12px;flex:none;box-shadow:0 0 0 1px var(--l),0 0 14px #33a6ff44}
+.lg{width:min(190px,52vw);aspect-ratio:1;border-radius:24px;justify-self:center;box-shadow:0 0 0 1px var(--l),0 0 40px #0a7fe855}#lk h1{text-align:center}h1{font:800 18px Changa,sans-serif}h3{font:800 18px Changa,sans-serif}
 .pub,.go{font:800 15px Changa,sans-serif;color:#fff;background:linear-gradient(180deg,#0a7fe8,#00479b);border:1px solid #3aa0ff;border-radius:12px;padding:10px 16px;cursor:pointer;transition:transform .15s var(--eo)}.pub:active,.go:active{transform:scale(.96)}.pub:disabled{opacity:.5}
 .pub{border-radius:99px;padding:8px 14px}.pub b{background:#fff;color:#00479b;border-radius:99px;padding:0 7px;margin-inline-start:6px;font-size:13px}.pub b:empty{display:none}#un{background:#26324a;border-color:#3a4a6a}
 nav,.chs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
@@ -29,7 +31,7 @@ dialog{border:1px solid var(--l);background:var(--p);color:var(--t);border-radiu
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 <div id="lk"></div>
-<header id="hd" hidden><div class="hd"><h1>لوحة تحكم ZAZA</h1><div><button class="pub" id="un" hidden>↶ تراجع</button><button class="pub" id="pub">نشر التعديلات<b id="dc"></b></button></div></div>
+<header id="hd" hidden><div class="hd"><div class="br"><img src="assets/logo.webp" alt="ZAZA"><h1>لوحة التحكم</h1></div><div><button class="pub" id="un" hidden>↶ تراجع</button><button class="pub" id="pub">نشر التعديلات<b id="dc"></b></button></div></div>
 <nav id="nav"><button data-v="stock">المخزون والتعديل</button><button data-v="game">لعبة جديدة</button><button data-v="acc">ملحق جديد</button><button data-v="set">إعدادات الموقع</button><button data-v="hist">السجل</button><button data-v="lock">🔒 قفل</button></nav></header>
 <main id="m" hidden></main><dialog id="ed"></dialog><div class="ts" id="ts" hidden></div><div id="dl"></div>
 <script>
@@ -49,11 +51,11 @@ function toast(t,e){const x=$('#ts');x.textContent=t;x.className='ts'+(e?' e':''
 /* ===== تسجيل الدخول: التوكن متشفّر بالباسورد على جهازك ===== */
 function lock(){tok='';clearTimeout(idle);$('#hd').hidden=$('#m').hidden=true;$('#lk').hidden=false;$('#ed').open&&$('#ed').close();
   if(!V)return setup();
-  $('#lk').innerHTML=`<form id="lf"><h1>لوحة تحكم ZAZA</h1><input id="pw" type="password" placeholder="الباسورد" autocomplete="current-password" required><button class="go">دخول</button><p class="note" id="le"></p><a href="#" id="rs" class="note">نسيت الباسورد / إعداد جديد</a></form>`;
+  $('#lk').innerHTML=`<form id="lf"><img class="lg" src="assets/logo.webp" alt="ZAZA"><h1>لوحة تحكم ZAZA</h1><input id="pw" type="password" placeholder="الباسورد" autocomplete="current-password" required><button class="go">دخول</button><p class="note" id="le"></p><a href="#" id="rs" class="note">نسيت الباسورد / إعداد جديد</a></form>`;
   $('#lf').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;try{tok=await unseal($('#pw').value,V);fails=0;await start()}catch(x){fails++;$('#le').textContent='الباسورد غلط';$('#pw').value='';await new Promise(r=>setTimeout(r,Math.min(fails,5)*800))}b.disabled=false};
   $('#rs').onclick=e=>{e.preventDefault();if(confirm('هيتمسح التوكن المحفوظ على الجهاز ده وتعمل إعداد جديد. متأكد؟')){localStorage.removeItem('zaza_vault');V=null;lock()}}}
 function setup(){const hn=location.hostname.split('.'),p=location.pathname.split('/')[1],g=hn[1]=='github'?hn[0]+'/'+(p&&!/\./.test(p)?p:hn[0]+'.github.io'):'';
-  $('#lk').innerHTML=`<form id="sf"><h1>إعداد لوحة التحكم (مرة واحدة)</h1><label>GitHub Token<input id="tk" type="password" dir="ltr" required autocomplete="off"></label><label>المستودع (owner/repo)<input id="rp" dir="ltr" value="${E(g)}" required></label><label>الفرع<input id="br" dir="ltr" value="main"></label><label>اختار باسورد للوحة (8 حروف على الأقل)<input id="p1" type="password" minlength="8" required autocomplete="new-password"></label><label>أكّد الباسورد<input id="p2" type="password" required autocomplete="new-password"></label><button class="go">حفظ ودخول</button><p class="note" id="le"></p><p class="note">التوكن: GitHub ← Settings ← Developer settings ← Fine-grained tokens، على مستودع الموقع بس، صلاحية <b>Contents: Read and write</b>. بيتشفّر بالباسورد ويتحفظ على جهازك أنت بس، ومبيتبعتش لأي مكان غير GitHub.</p></form>`;
+  $('#lk').innerHTML=`<form id="sf"><img class="lg" src="assets/logo.webp" alt="ZAZA"><h1>إعداد لوحة التحكم (مرة واحدة)</h1><label>GitHub Token<input id="tk" type="password" dir="ltr" required autocomplete="off"></label><label>المستودع (owner/repo)<input id="rp" dir="ltr" value="${E(g)}" required></label><label>الفرع<input id="br" dir="ltr" value="main"></label><label>اختار باسورد للوحة (8 حروف على الأقل)<input id="p1" type="password" minlength="8" required autocomplete="new-password"></label><label>أكّد الباسورد<input id="p2" type="password" required autocomplete="new-password"></label><button class="go">حفظ ودخول</button><p class="note" id="le"></p><p class="note">التوكن: GitHub ← Settings ← Developer settings ← Fine-grained tokens، على مستودع الموقع بس، صلاحية <b>Contents: Read and write</b>. بيتشفّر بالباسورد ويتحفظ على جهازك أنت بس، ومبيتبعتش لأي مكان غير GitHub.</p></form>`;
   $('#sf').onsubmit=async e=>{e.preventDefault();const t=$('#tk').value.trim(),r=$('#rp').value.trim(),b=$('#br').value.trim()||'main',le=$('#le');
     if($('#p1').value!=$('#p2').value)return le.textContent='الباسوردين مش زي بعض';le.textContent='بتأكد من التوكن…';
     try{if(!(await fetch('https://api.github.com/repos/'+r,{headers:{Authorization:'Bearer '+t}})).ok)throw 0}catch(x){return le.textContent='التوكن أو اسم المستودع غلط'}
@@ -62,7 +64,7 @@ const bump=()=>{clearTimeout(idle);idle=setTimeout(lock,10*60*1000)};['pointerdo
 async function start(){$('#lk').hidden=true;$('#lk').innerHTML='';$('#hd').hidden=$('#m').hidden=false;bump();
   if(!C){await new Promise(r=>{const s=document.createElement('script');s.src='data/catalog.js?'+Date.now();s.onload=s.onerror=r;document.head.append(s)});
     C=window.CATALOG||{tabs:[],games:{},originals:[],accts:{},products:[],genres:[]};
-    if(C.orig&&!C.tabs.some(t=>t.id=='originals')){const k=C.tabs.findIndex(t=>t.kind=='accounts');C.tabs.splice(k<0?C.tabs.length-1:k,0,{id:'originals',title:C.orig.title,kind:'originals'})}
+    C.tabs=C.tabs.filter(t=>t.kind!='originals');
     $('#dl').innerHTML=`<datalist id="gl">${(C.genres||[]).map(g=>`<option value="${E(g)}">`).join('')}</datalist><datalist id="cl">${[...new Set(C.products.map(p=>p.cat))].map(g=>`<option value="${E(g)}">`).join('')}</datalist>`}
   if(!dirty)await loadLive();$('#pub').disabled=!dirty;go(view)}
 /* ===== GitHub + تراجع + سجل ===== */
@@ -96,7 +98,7 @@ function items(t){const ed=L.edit[t.id]||{},src=t.kind=='modded'?C.games[t.id]:t
   if(t.kind=='accounts')A.filter(g=>!l.some(x=>x.name==g.title)).forEach(g=>l.unshift({name:g.title,dn:g.dn,price:g.price,items:g.items||one(g),badges:g.badges||(g.both?['PS4 + PS5']:[]),platforms:g.both?['PS4','PS5']:[g.plat||'PS4'],_new:1}));
   if(t.kind=='products')L.padded.filter(p=>!l.some(x=>x.name==p.name)).forEach(p=>l.unshift({in_stock:true,...p,_new:1}));return l}
 function go(v){if(v=='lock')return lock();view=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v==v));({stock:drawStock,game:drawGame,acc:drawAcc,set:drawSet,hist:drawHist})[v]()}
-document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!C)return;
   if(b.dataset.rm!==undefined)return b.closest('.it').remove();if(b.id=='ia')return $('#its').insertAdjacentHTML('beforeend',itRow({}));if(b.dataset.rs)return restore(b.dataset.rs);
   if(b.closest('nav'))return go(b.dataset.v);if(b.dataset.sec){sec=b.dataset.sec;return drawStock()}if(b.id=='ec')return $('#ed').close();
   const t=C.tabs.find(x=>x.id==sec),i=cur[+b.dataset.n],a=b.dataset.a;if(!a||!i)return;
@@ -163,9 +165,9 @@ function drawAcc(){$('#m').innerHTML=`<form id="f" style="display:grid;gap:10px"
     if(im&&im.size){try{const p=await pack(im,'contain'),path='products/'+slug('products',name)+'.'+p.ext;upd(path,p.cover,'products|'+name);o.img=path}catch(x){return toast('مشكلة في الصورة',1)}}
     L.padded.push(o);d();e.target.reset();toast('تمت الإضافة — اضغط نشر التعديلات')}}
 /* ===== إعدادات الموقع ===== */
-function drawSet(){const M=C.tabs.filter(t=>t.kind=='modded'),cf=L.cfg||{};
-  $('#m').innerHTML=`<form id="f" style="display:grid;gap:10px"><label>أرقام الواتساب (رقم في كل سطر)<textarea name="ph" rows="3" dir="ltr">${E(((cf.phones&&cf.phones.length)?cf.phones:C.phones||[]).join('\n'))}</textarea></label>${M.map(t=>`<label>سعر ${E(t.title)} الافتراضي<input name="sp_${t.id}" type="number" inputmode="numeric" min="0" value="${(cf.secprice||{})[t.id]??t.price??''}"></label>`).join('')}<button class="go">حفظ الإعدادات</button><p class="note">سعر القسم بيتطبق على الألعاب اللي ملهاش سعر خاص بيها. الأرقام بتتستخدم في أزرار الواتساب وإرسال الطلب.</p></form>`;
+function drawSet(){const M=C.tabs.filter(t=>t.kind=='modded'),cf=L.cfg||{},us=cf.phones&&cf.phones.length,ph=us?cf.phones:C.phones||[],pnm=us?(cf.pnames||{}):(C.pnames||{});
+  $('#m').innerHTML=`<form id="f" style="display:grid;gap:10px"><label>أرقام الواتساب والاسم الظاهر (سطر لكل رقم: الرقم ثم الاسم)<textarea name="ph" rows="3" dir="auto">${E(ph.map(p=>p+(pnm[p]?' '+pnm[p]:'')).join('\n'))}</textarea></label>${M.map(t=>`<label>سعر ${E(t.title)} الافتراضي<input name="sp_${t.id}" type="number" inputmode="numeric" min="0" value="${(cf.secprice||{})[t.id]??t.price??''}"></label>`).join('')}<button class="go">حفظ الإعدادات</button><p class="note">سعر القسم بيتطبق على الألعاب اللي ملهاش سعر خاص بيها. الأرقام والأسماء بتظهر في أزرار الواتساب وإرسال الطلب.</p></form>`;
   $('#f').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target),sp={};M.forEach(t=>{const v=+f.get('sp_'+t.id);if(v&&v!==t.price)sp[t.id]=v});
-    L.cfg={phones:f.get('ph').split('\n').map(x=>x.replace(/\D/g,'')).filter(Boolean),secprice:sp};if(JSON.stringify(L.cfg.phones)==JSON.stringify(C.phones))L.cfg.phones=[];d();toast('اتحفظت — اضغط نشر التعديلات')}}
+    const phs=[],pns={};f.get('ph').split('\n').forEach(l=>{const m=l.trim().match(/^(\+?[\d-]+)\s*(.*)$/);if(m){const n=m[1].replace(/\D/g,'');phs.push(n);if(m[2].trim())pns[n]=m[2].trim()}});L.cfg={phones:phs,pnames:pns,secprice:sp};if(JSON.stringify([phs,Object.entries(pns).sort()])==JSON.stringify([C.phones||[],Object.entries(C.pnames||{}).sort()])){L.cfg.phones=[];L.cfg.pnames={}}d();toast('اتحفظت — اضغط نشر التعديلات')}}
 lock();
 </script></body></html>
