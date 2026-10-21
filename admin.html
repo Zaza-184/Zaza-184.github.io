@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#030712"><title>لوحة تحكم ZAZA</title>
+<link href="https://fonts.googleapis.com/css2?family=Changa:wght@600;800&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030712;--p:#0a1224;--l:#15305c;--ps:#0070d1;--b:#33a6ff;--t:#eaf2ff;--m:#8aa3c7;--r:#ff5a67;--g:#3bd1a8;--eo:cubic-bezier(.23,1,.32,1)}
+*{box-sizing:border-box;margin:0}html{-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--t);font:16px/1.5 Tajawal,system-ui,sans-serif;padding-bottom:40px}
+header{position:sticky;top:0;z-index:5;background:#030712ee;backdrop-filter:blur(8px);border-bottom:1px solid var(--l);padding:10px 12px;display:grid;gap:8px;max-width:760px;margin:auto}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:8px}.hd div{display:flex;gap:6px}h1{font:800 18px Changa,sans-serif}h3{font:800 18px Changa,sans-serif}
+.pub,.go{font:800 15px Changa,sans-serif;color:#fff;background:linear-gradient(180deg,#0a7fe8,#00479b);border:1px solid #3aa0ff;border-radius:12px;padding:10px 16px;cursor:pointer;transition:transform .15s var(--eo)}.pub:active,.go:active{transform:scale(.96)}.pub:disabled{opacity:.5}
+.pub{border-radius:99px;padding:8px 14px}.pub b{background:#fff;color:#00479b;border-radius:99px;padding:0 7px;margin-inline-start:6px;font-size:13px}.pub b:empty{display:none}#un{background:#26324a;border-color:#3a4a6a}
+nav,.chs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+nav button,.chs button{flex:none;font:800 14px Changa,sans-serif;color:var(--m);background:var(--p);border:1px solid var(--l);border-radius:10px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+nav button[aria-selected=true],.chs button[aria-pressed=true]{color:#fff;background:#0b2a58;border-color:var(--b)}
+main{max-width:760px;margin:auto;padding:12px;display:grid;gap:10px}
+input,select,textarea{width:100%;background:var(--p);border:1px solid var(--l);border-radius:10px;color:var(--t);font:inherit;font-size:16px;padding:10px 12px}
+label{display:grid;gap:4px;color:var(--m);font-size:14px}
+.r{display:grid;gap:8px;background:var(--p);border:1px solid var(--l);border-radius:12px;padding:8px;animation:up .3s var(--eo) backwards}.r.hid{opacity:.55}
+@keyframes up{from{opacity:0;transform:translateY(8px)}}
+.h{display:flex;gap:10px;align-items:center}.r img,.r .ph{width:46px;height:46px;border-radius:8px;object-fit:cover;flex:none;background:#0b1e3d}
+.r .n{flex:1;min-width:0;unicode-bidi:plaintext;font-weight:700;font-size:14px;overflow-wrap:anywhere}.r small{display:block;color:var(--g);font-weight:400}.r small.w{color:var(--r)}
+.bt{display:flex;gap:6px}.bt button{min-height:44px;padding:0 12px;border:1px solid var(--l);background:#0b1e3d;color:var(--t);border-radius:10px;font:700 13px Changa,sans-serif;cursor:pointer}
+.bt .sw{flex:1;color:#04241b;background:var(--g);border-color:var(--g)}.bt .sw.off{color:#fff;background:var(--r);border-color:var(--r)}.bt .x{color:var(--r)}
+.it{display:grid;grid-template-columns:1fr 44px;gap:6px}.it button{grid-row:1/3;grid-column:2;border:1px solid var(--l);background:#0b1e3d;color:var(--r);border-radius:10px;cursor:pointer}
+.note{color:var(--m);font-size:13px;line-height:1.7}.note b{color:var(--t)}a.note{text-decoration:underline}
+.ts{position:fixed;left:16px;right:16px;bottom:24px;max-width:420px;margin:auto;padding:14px;border-radius:12px;background:#0f6b55;color:#fff;text-align:center;font-weight:700;z-index:99;animation:up .25s var(--eo)}.ts.e{background:#9b2c36}
+#lk{position:fixed;inset:0;z-index:50;background:var(--bg);overflow:auto;display:grid;place-items:center;padding:20px}#lk form{display:grid;gap:12px;width:min(380px,100%)}
+dialog{border:1px solid var(--l);background:var(--p);color:var(--t);border-radius:18px;padding:18px 16px;width:min(520px,calc(100% - 20px));max-height:88vh;overflow:auto;overscroll-behavior:contain}dialog::backdrop{background:#000b}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div id="lk"></div>
+<header id="hd" hidden><div class="hd"><h1>لوحة تحكم ZAZA</h1><div><button class="pub" id="un" hidden>↶ تراجع</button><button class="pub" id="pub">نشر التعديلات<b id="dc"></b></button></div></div>
+<nav id="nav"><button data-v="stock">المخزون والتعديل</button><button data-v="game">لعبة جديدة</button><button data-v="acc">ملحق جديد</button><button data-v="set">إعدادات الموقع</button><button data-v="hist">السجل</button><button data-v="lock">🔒 قفل</button></nav></header>
+<main id="m" hidden></main><dialog id="ed"></dialog><div class="ts" id="ts" hidden></div><div id="dl"></div>
+<script>
+const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const blank=()=>({oos:{},pstock:{},videos:{},hide:{},edit:{},added:[],padded:[],cfg:{}});
+const enc=new TextEncoder(),b2a=u=>btoa(String.fromCharCode(...new Uint8Array(u))),a2b=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const kd=async(pw,salt)=>crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']),{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+async function seal(pw,txt){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));return{salt:b2a(salt),iv:b2a(iv),data:b2a(await crypto.subtle.encrypt({name:'AES-GCM',iv},await kd(pw,salt),enc.encode(txt)))}}
+async function unseal(pw,v){return new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:a2b(v.iv)},await kd(pw,a2b(v.salt)),a2b(v.data)))}
+let V=null;try{V=JSON.parse(localStorage.zaza_vault||'null')}catch(e){}
+let tok='',C,L=blank(),L0=JSON.stringify(L),hist=[],pend=[],dirty=0,view='stock',sec='',q='',cur=[],idle,fails=0;
+const BASE=location.href.split(/[?#]/)[0].replace(/[^/]*$/,'');
+const H=()=>({Authorization:'Bearer '+tok,Accept:'application/vnd.github+json'}),U=p=>`https://api.github.com/repos/${V.repo}/contents/${p}`;
+const b64=s=>btoa(unescape(encodeURIComponent(s)));
+const slug=(t,k)=>{const s=t+'|'+k;let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return(k.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'g')+'-'+h.toString(16)};
+function toast(t,e){const x=$('#ts');x.textContent=t;x.className='ts'+(e?' e':'');x.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>x.hidden=true,e?5000:3200)}
+/* ===== تسجيل الدخول: التوكن متشفّر بالباسورد على جهازك ===== */
+function lock(){tok='';clearTimeout(idle);$('#hd').hidden=$('#m').hidden=true;$('#lk').hidden=false;$('#ed').open&&$('#ed').close();
+  if(!V)return setup();
+  $('#lk').innerHTML=`<form id="lf"><h1>لوحة تحكم ZAZA</h1><input id="pw" type="password" placeholder="الباسورد" autocomplete="current-password" required><button class="go">دخول</button><p class="note" id="le"></p><a href="#" id="rs" class="note">نسيت الباسورد / إعداد جديد</a></form>`;
+  $('#lf').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;try{tok=await unseal($('#pw').value,V);fails=0;await start()}catch(x){fails++;$('#le').textContent='الباسورد غلط';$('#pw').value='';await new Promise(r=>setTimeout(r,Math.min(fails,5)*800))}b.disabled=false};
+  $('#rs').onclick=e=>{e.preventDefault();if(confirm('هيتمسح التوكن المحفوظ على الجهاز ده وتعمل إعداد جديد. متأكد؟')){localStorage.removeItem('zaza_vault');V=null;lock()}}}
+function setup(){const hn=location.hostname.split('.'),p=location.pathname.split('/')[1],g=hn[1]=='github'?hn[0]+'/'+(p&&!/\./.test(p)?p:hn[0]+'.github.io'):'';
+  $('#lk').innerHTML=`<form id="sf"><h1>إعداد لوحة التحكم (مرة واحدة)</h1><label>GitHub Token<input id="tk" type="password" dir="ltr" required autocomplete="off"></label><label>المستودع (owner/repo)<input id="rp" dir="ltr" value="${E(g)}" required></label><label>الفرع<input id="br" dir="ltr" value="main"></label><label>اختار باسورد للوحة (8 حروف على الأقل)<input id="p1" type="password" minlength="8" required autocomplete="new-password"></label><label>أكّد الباسورد<input id="p2" type="password" required autocomplete="new-password"></label><button class="go">حفظ ودخول</button><p class="note" id="le"></p><p class="note">التوكن: GitHub ← Settings ← Developer settings ← Fine-grained tokens، على مستودع الموقع بس، صلاحية <b>Contents: Read and write</b>. بيتشفّر بالباسورد ويتحفظ على جهازك أنت بس، ومبيتبعتش لأي مكان غير GitHub.</p></form>`;
+  $('#sf').onsubmit=async e=>{e.preventDefault();const t=$('#tk').value.trim(),r=$('#rp').value.trim(),b=$('#br').value.trim()||'main',le=$('#le');
+    if($('#p1').value!=$('#p2').value)return le.textContent='الباسوردين مش زي بعض';le.textContent='بتأكد من التوكن…';
+    try{if(!(await fetch('https://api.github.com/repos/'+r,{headers:{Authorization:'Bearer '+t}})).ok)throw 0}catch(x){return le.textContent='التوكن أو اسم المستودع غلط'}
+    V={...await seal($('#p1').value,t),repo:r,branch:b};localStorage.zaza_vault=JSON.stringify(V);tok=t;await start()}}
+const bump=()=>{clearTimeout(idle);idle=setTimeout(lock,10*60*1000)};['pointerdown','keydown'].forEach(ev=>addEventListener(ev,()=>tok&&bump()));
+async function start(){$('#lk').hidden=true;$('#lk').innerHTML='';$('#hd').hidden=$('#m').hidden=false;bump();
+  if(!C){await new Promise(r=>{const s=document.createElement('script');s.src='data/catalog.js?'+Date.now();s.onload=s.onerror=r;document.head.append(s)});
+    C=window.CATALOG||{tabs:[],games:{},originals:[],accts:{},products:[],genres:[]};
+    if(C.orig&&!C.tabs.some(t=>t.id=='originals')){const k=C.tabs.findIndex(t=>t.kind=='accounts');C.tabs.splice(k<0?C.tabs.length-1:k,0,{id:'originals',title:C.orig.title,kind:'originals'})}
+    $('#dl').innerHTML=`<datalist id="gl">${(C.genres||[]).map(g=>`<option value="${E(g)}">`).join('')}</datalist><datalist id="cl">${[...new Set(C.products.map(p=>p.cat))].map(g=>`<option value="${E(g)}">`).join('')}</datalist>`}
+  if(!dirty)await loadLive();$('#pub').disabled=!dirty;go(view)}
+/* ===== GitHub + تراجع + سجل ===== */
+async function put(p,content,msg){let sha;const g=await fetch(U(p)+'?ref='+V.branch,{headers:H()});if(g.ok)sha=(await g.json()).sha;
+  const r=await fetch(U(p),{method:'PUT',headers:H(),body:JSON.stringify({message:msg,content,branch:V.branch,sha})});if(!r.ok)throw Error((await r.json().catch(()=>({}))).message||r.status)}
+const snap=()=>JSON.stringify(L),dec=j=>JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
+async function loadLive(){try{const g=await fetch(U('data/live.json')+'?ref='+V.branch+'&t='+Date.now(),{headers:H()});if(g.ok)L={...blank(),...dec(await g.json())}}catch(e){}L0=snap();hist=[L0];$('#un').hidden=true}
+function d(){dirty++;hist.push(snap());$('#dc').textContent=dirty;$('#pub').disabled=false;$('#un').hidden=false}
+function undo(){if(hist.length<2)return;hist.pop();L={...blank(),...JSON.parse(hist[hist.length-1])};dirty=Math.max(0,dirty-1);$('#dc').textContent=dirty||'';$('#pub').disabled=!dirty;$('#un').hidden=hist.length<2;go(view);toast('اتراجع عن آخر تعديل')}
+const cn=o=>[Object.values(o.oos).flat().length,Object.values(o.hide).flat().length,Object.values(o.edit).reduce((s,m)=>s+Object.keys(m).length,0),o.added.length+o.padded.length];
+function msg(){const a=cn({...blank(),...JSON.parse(L0)}),b=cn(L),n=['نفذت','مخفي','تعديل','إضافة'],s=b.map((v,i)=>v-a[i]?n[i]+' '+(v>a[i]?'+':'')+(v-a[i]):'').filter(Boolean).join('، ');return 'تحديث من اللوحة'+(s?' — '+s:'')}
+async function restore(sha){try{const g=await fetch(U('data/live.json')+'?ref='+sha,{headers:H()});if(!g.ok)throw 0;L={...blank(),...dec(await g.json())};d();toast('اتسترجعت النسخة — اضغط نشر التعديلات لتأكيدها');go('stock')}catch(e){toast('تعذّر استرجاع النسخة',1)}}
+async function drawHist(){$('#m').innerHTML='<p class="note">بيحمّل السجل…</p>';
+  try{const r=await fetch(`https://api.github.com/repos/${V.repo}/commits?path=data/live.json&sha=${V.branch}&per_page=20`,{headers:H()});if(!r.ok)throw 0;const cs=await r.json();
+    $('#m').innerHTML=`<p class="note">آخر ${cs.length} نشر. <b>استرجاع</b> بيرجّع اللوحة لحالة اللحظة دي، وبتفضل تعديل غير منشور لحد ما تدوس نشر.</p>`+cs.map(c=>`<div class="r"><div class="n" dir="auto">${E(c.commit.message.split('\n')[0])}<small>${E(new Date(c.commit.author.date).toLocaleString('ar-EG'))}</small></div><div class="bt"><button class="sw" data-rs="${c.sha}" style="background:#0b2a58;border-color:var(--b);color:#fff">استرجاع</button></div></div>`).join('')}catch(e){$('#m').innerHTML='<p class="note">تعذّر تحميل السجل</p>'}}
+$('#un').onclick=undo;
+$('#pub').onclick=async()=>{const b=$('#pub');b.disabled=true;try{for(const f of pend)await put(f.path,f.content,'ملف: '+f.path);await put('data/live.json',b64(JSON.stringify(L,null,1)),msg());
+  pend=[];dirty=0;L0=snap();hist=[L0];$('#dc').textContent='';$('#un').hidden=true;toast('تم النشر ✓ — التعديلات بتظهر في الموقع خلال دقيقة تقريبًا')}catch(e){b.disabled=false;toast('فشل النشر: '+e.message,1)}};
+onbeforeunload=e=>{if(dirty){e.preventDefault();return ''}};
+/* ===== البيانات ===== */
+const key=(t,i)=>t.kind=='accounts'||t.kind=='products'?i.name:i.title,ic=i=>i.img||i.icon||(i.items&&(i.items.find(x=>x.icon)||{}).icon)||'',
+ lab=(t,i)=>i.dn||(t.kind=='accounts'&&i.items?i.items.map(x=>x.title).join(' + '):key(t,i)),
+ ytid=v=>{const m=String(v).match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/)||String(v).trim().match(/^([\w-]{11})$/);return m?m[1]:''},
+ hid=(t,i)=>(L.hide[t.id]||[]).includes(key(t,i)),
+ stock=(t,i)=>{const k=key(t,i);return t.kind=='products'?(k in L.pstock?L.pstock[k]:i.in_stock):!(L.oos[t.id]||[]).includes(k)},
+ flip=(m,t,k)=>{const a=m[t]=m[t]||[],n=a.indexOf(k);n<0?a.push(k):a.splice(n,1)},
+ one=g=>[{title:g.title,icon:g.icon,blurb:g.blurb||'',video:g.video||'',players:g.players||''}];
+function items(t){const ed=L.edit[t.id]||{},src=t.kind=='modded'?C.games[t.id]:t.kind=='originals'?C.originals:t.kind=='accounts'?C.accts[t.id]:C.products;
+  const l=src.map(b=>{const e=ed[key(t,b)]||{},m={...b,...e,_b:b};if(e.img&&t.kind!='products')m.icon=e.img;return m}),A=L.added.filter(g=>g.tab==t.id);
+  if(t.kind=='modded'||t.kind=='originals')A.filter(g=>!l.some(x=>x.title==g.title)).forEach(g=>l.unshift({prices:[],badges:[],...g,_new:1}));
+  if(t.kind=='accounts')A.filter(g=>!l.some(x=>x.name==g.title)).forEach(g=>l.unshift({name:g.title,dn:g.dn,price:g.price,items:g.items||one(g),badges:g.badges||(g.both?['PS4 + PS5']:[]),platforms:g.both?['PS4','PS5']:[g.plat||'PS4'],_new:1}));
+  if(t.kind=='products')L.padded.filter(p=>!l.some(x=>x.name==p.name)).forEach(p=>l.unshift({in_stock:true,...p,_new:1}));return l}
+function go(v){if(v=='lock')return lock();view=v;document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v==v));({stock:drawStock,game:drawGame,acc:drawAcc,set:drawSet,hist:drawHist})[v]()}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.rm!==undefined)return b.closest('.it').remove();if(b.id=='ia')return $('#its').insertAdjacentHTML('beforeend',itRow({}));if(b.dataset.rs)return restore(b.dataset.rs);
+  if(b.closest('nav'))return go(b.dataset.v);if(b.dataset.sec){sec=b.dataset.sec;return drawStock()}if(b.id=='ec')return $('#ed').close();
+  const t=C.tabs.find(x=>x.id==sec),i=cur[+b.dataset.n],a=b.dataset.a;if(!a||!i)return;
+  if(a=='t'){if(t.kind=='products'){const on=stock(t,i),k=key(t,i);L.pstock[k]=!on;if(L.pstock[k]===(i._b?i._b.in_stock:true))delete L.pstock[k]}else flip(L.oos,t.id,key(t,i));d();list()}
+  else if(a=='h'){flip(L.hide,t.id,key(t,i));d();list()}
+  else if(a=='e')edit(t,i);
+  else if(a=='x'&&confirm('حذف "'+lab(t,i)+'" نهائيًا من الموقع؟')){const k=key(t,i),own=t.id+'|'+k;
+    if(t.kind=='products'){L.padded=L.padded.filter(p=>p.name!=k);pend=pend.filter(f=>f.own!=own)}
+    else{const e=L.added.find(g=>g.tab==t.id&&g.title==k),bo=e&&e.both;L.added=L.added.filter(g=>!(g.title==k&&(g.tab==t.id||(bo&&g.both))));pend=pend.filter(f=>bo?!(f.own&&f.own.split('|')[1]==k):f.own!=own)}d();list()}});
+function drawStock(){const T=C.tabs;sec=T.some(t=>t.id==sec)?sec:(T[0]||{}).id;
+  $('#m').innerHTML=`<div class="chs">${T.map(t=>`<button data-sec="${t.id}" aria-pressed="${t.id==sec}">${E(t.title)}</button>`).join('')}</div><input id="q" type="search" placeholder="دوّر…" dir="auto" value="${E(q)}"><div id="ls" style="display:grid;gap:8px"></div>`;
+  $('#q').oninput=e=>{q=e.target.value;list()};list()}
+function list(){const t=C.tabs.find(x=>x.id==sec);if(!t)return;const s=q.trim().toLowerCase();
+  cur=items(t).filter(i=>(key(t,i)+' '+lab(t,i)).toLowerCase().includes(s));
+  $('#ls').innerHTML=cur.map((i,n)=>{const on=stock(t,i),h=hid(t,i),im=ic(i),ed=L.edit[t.id]&&L.edit[t.id][key(t,i)];
+   return `<div class="r${h?' hid':''}"><div class="h">${im?`<img loading="lazy" src="${E(encodeURI(im))}" alt="">`:'<div class="ph"></div>'}<div class="n" dir="auto">${E(lab(t,i))}${h?'<small class="w">مخفية عن الزباين</small>':i._new?'<small>مضافة من اللوحة</small>':ed?'<small>معدّلة</small>':''}</div></div><div class="bt"><button class="sw${on?'':' off'}" data-a="t" data-n="${n}">${on?'متوفر':'نفذت'}</button><button data-a="e" data-n="${n}">✏️ تعديل</button><button data-a="h" data-n="${n}">${h?'إظهار':'إخفاء'}</button>${i._new?`<button class="x" data-a="x" data-n="${n}" aria-label="حذف">✕</button>`:''}</div></div>`}).join('')||'<p class="note">مفيش حاجة هنا لسه</p>'}
+/* ===== الصور وصفحات المشاركة (واتساب) ===== */
+const pack=(f,fit)=>new Promise((ok,no)=>{const i=new Image;i.onload=()=>{const W=i.width,Hh=i.height,s=Math.min(W,Hh),
+  mk=(w,h,fn,ty,qq)=>new Promise(r=>{const c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'));c.toBlob(b=>{const fr=new FileReader;fr.onload=()=>r({b:fr.result.split(',')[1],t:b.type});fr.readAsDataURL(b)},ty,qq)});
+  Promise.all([mk(512,512,x=>{if(fit=='contain'){x.fillStyle='#0a1224';x.fillRect(0,0,512,512);const r=Math.min(512/W,512/Hh);x.drawImage(i,(512-W*r)/2,(512-Hh*r)/2,W*r,Hh*r)}else x.drawImage(i,(W-s)/2,(Hh-s)/2,s,s,0,0,512,512)},'image/webp',.85),
+   mk(1200,630,x=>{x.fillStyle='#0a1224';x.fillRect(0,0,1200,630);x.globalAlpha=.3;let r=Math.max(1200/W,630/Hh);x.drawImage(i,(1200-W*r)/2,(630-Hh*r)/2,W*r,Hh*r);x.globalAlpha=1;r=Math.min(560/W,560/Hh);x.drawImage(i,(1200-W*r)/2,(630-Hh*r)/2,W*r,Hh*r)},'image/jpeg',.82)]).then(([a,o])=>ok({cover:a.b,ext:a.t=='image/webp'?'webp':'png',og:o.b}))};i.onerror=no;i.src=URL.createObjectURL(f)});
+const ogp=c=>c?'og/'+slug('i',c)+'.jpg':'assets/og.jpg',upd=(path,content,own)=>{pend=pend.filter(f=>f.path!=path);pend.push({path,content,own})};
+function page(tab,k,name,desc,icon,own){const s=slug(tab,k),kq=encodeURIComponent(k);
+  upd('g/'+s+'.html',b64(`<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><title>${E(name)} | ZAZA</title><meta property="og:type" content="website"><meta property="og:title" content="${E(name)} | ZAZA بتاع ألعاب"><meta property="og:description" content="${E(desc||'اطلب دلوقتي من ZAZA بتاع ألعاب على واتساب')}"><meta property="og:image" content="${BASE}${ogp(icon)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:url" content="${BASE}g/${s}.html"><meta name="twitter:card" content="summary_large_image"><script>location.replace("../#${tab}/${kq}")<\/script><a href="../#${tab}/${kq}">افتح</a></html>`),own)}
+function shareFiles(tab,k,name,desc,p,icon,own){upd(ogp(icon),p.og,own);page(tab,k,name,desc,icon,own)}
+/* ===== تعديل أي عنصر ===== */
+const itRow=x=>`<div class="it"><input name="it_t" list="ag" dir="auto" placeholder="اسم اللعبة" value="${E(x.title||'')}"><input name="it_v" dir="ltr" placeholder="لينك التريلر (اختياري)" value="${x.video?'https://youtu.be/'+x.video:''}"><button type="button" data-rm aria-label="شيل">✕</button></div>`;
+function edit(t,i){const k=t.kind,g=k=='modded'||k=='originals',K=key(t,i),GM={},own=t.id+'|'+K;
+  const ins=a=>a.forEach(x=>{if(x.title&&!GM[x.title.toLowerCase()])GM[x.title.toLowerCase()]=x});
+  Object.values(C.games).forEach(ins);ins(C.originals);Object.values(C.accts).forEach(l=>l.forEach(a=>ins(a.items)));ins(L.added.map(a=>({title:a.title,icon:a.icon,blurb:a.blurb,video:a.video,players:a.players})));
+  const types=(C.orig&&C.orig.types&&C.orig.types.length)?C.orig.types:(i.prices||[]).map(p=>p[0]),pv=ty=>((i.prices||[]).find(p=>p[0]==ty)||[])[1]??'';
+  $('#ed').innerHTML=`<form id="ef" style="display:grid;gap:10px"><h3 dir="auto">${E(lab(t,i))}</h3><label>الاسم الظاهر للزباين (سيبه فاضي = من غير تغيير)<input name="dn" dir="auto" placeholder="${E(K)}" value="${E(i.dn||'')}"></label>${k=='originals'?types.map((ty,j)=>`<label>سعر ${E(ty)} (فاضي = مش متاح)<input name="p${j}" type="number" inputmode="numeric" min="0" value="${pv(ty)}"></label>`).join(''):`<label>السعر (فاضي = اسأل عن السعر)<input name="price" type="number" inputmode="numeric" min="0" value="${i.price??''}"></label>`}${k=='accounts'||k=='originals'?`<label>علامات (افصل بفاصلة: PS4 + PS5، English، ...)<input name="badges" dir="auto" value="${E((i.badges||[]).join('، '))}"></label>`:''}${k=='accounts'?`<div><div class="note">الألعاب اللي جوه الأكونت</div><div id="its" style="display:grid;gap:10px;margin-top:6px">${i.items.map(itRow).join('')}</div><button type="button" class="go" id="ia" style="margin-top:8px;background:#0b2a58">＋ لعبة</button></div><datalist id="ag">${Object.values(GM).map(x=>`<option value="${E(x.title)}">`).join('')}</datalist>`:''}${g?`<label>التصنيف (افصل بفاصلة)<input name="genres" list="gl" dir="auto" value="${E((i.genres||[]).join('، '))}"></label><label>عدد اللاعبين<input name="players" dir="auto" value="${E(i.players||'')}"></label><label>نبذة<textarea name="blurb" rows="3" dir="auto">${E(i.blurb||'')}</textarea></label><label>لينك التريلر (يوتيوب)<input name="video" dir="ltr" value="${i.video?'https://youtu.be/'+i.video:''}"></label>`:''}${k=='products'?`<label>التصنيف<input name="cat" list="cl" dir="auto" value="${E(i.cat||'')}"></label>`:''}${g||k=='products'?`<label>${g?'غلاف جديد (اختياري)':'صورة المنتج'}<input name="img" type="file" accept="image/*"></label>`:''}<div class="bt"><button class="go" style="flex:1">حفظ</button><button type="button" class="go" id="ec" style="background:#26324a;border-color:#26324a">إلغاء</button></div></form>`;
+  $('#ed').showModal();
+  $('#ef').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),o={},TT=[t,...(k=='accounts'&&(i.platforms||[]).length==2?C.tabs.filter(z=>z.kind=='accounts'&&z.id!=t.id):[])];let bad=0,pk=null;
+    o.dn=f.get('dn').trim();
+    if(k=='originals')o.prices=types.map((ty,j)=>[ty,+f.get('p'+j)||0]).filter(p=>p[1]);else o.price=f.get('price')===''?null:+f.get('price');
+    if(k=='accounts'||k=='originals')o.badges=f.get('badges').split(/[,،]/).map(x=>x.trim()).filter(Boolean);
+    if(k=='accounts'){const ts=f.getAll('it_t'),vs=f.getAll('it_v');o.items=ts.map((x,j)=>{x=x.trim();if(!x)return null;const m=GM[x.toLowerCase()]||{title:x},v=(vs[j]||'').trim();if(v&&!ytid(v))bad=1;return{title:m.title,icon:m.icon||null,blurb:m.blurb||'',video:v?ytid(v):(m.video||''),players:m.players||''}}).filter(Boolean);
+      if(bad)return toast('لينك يوتيوب غير صحيح',1);if(!o.items.length)return toast('لازم لعبة واحدة على الأقل',1)}
+    if(g){o.genres=f.get('genres').split(/[,،+]/).map(x=>x.trim()).filter(Boolean);o.players=f.get('players').trim();o.blurb=f.get('blurb').trim();const v=f.get('video').trim();if(v&&!ytid(v))return toast('لينك اليوتيوب غير صحيح',1);o.video=ytid(v)}
+    if(k=='products')o.cat=f.get('cat').trim()||'ملحقات أخرى';
+    const im=f.get('img');if(im&&im.size){try{pk=await pack(im,g?'cover':'contain');const path=(g?'icons-extra/':'products/')+slug(t.id,K)+'-'+Date.now().toString(36)+'.'+pk.ext;upd(path,pk.cover,own);o.img=path}catch(x){return toast('مشكلة في الصورة',1)}}
+    if(k!='products'){const nm=o.dn||(k=='accounts'?o.items.map(x=>x.title).join(' + '):K),ic0=o.img||(k=='accounts'?(o.items.find(x=>x.icon)||{}).icon:i.icon),ds=k=='accounts'?(o.items.length==1?o.items[0].blurb:''):o.blurb;
+      for(const tt of TT){if(pk)shareFiles(tt.id,K,nm,ds,pk,ic0,tt.id+'|'+K);else page(tt.id,K,nm,ds,ic0,tt.id+'|'+K)}}
+    if(i._new){const r=k=='products'?L.padded.find(x=>x.name==K):L.added.find(x=>x.tab==t.id&&x.title==K);if(o.img&&k!='products'){o.icon=o.img;delete o.img}(k=='products'?[r]:L.added.filter(x=>x.title==K&&(x===r||(r.both&&x.both)))).forEach(x=>Object.assign(x,o))}
+    else for(const tt of TT){const E2=L.edit[tt.id]=L.edit[tt.id]||{},x=E2[K]=E2[K]||{},b=i._b;for(const n in o){const bv=n=='img'?undefined:b[n];if(n!='img'&&JSON.stringify(o[n]??'')==JSON.stringify(bv??''))delete x[n];else x[n]=o[n]}if(!Object.keys(x).length)delete E2[K]}
+    d();$('#ed').close();list()}}
+/* ===== إضافة ===== */
+function drawGame(){const T=C.tabs.filter(t=>t.kind=='modded'||t.kind=='accounts'||t.kind=='originals'),AC=C.tabs.filter(t=>t.kind=='accounts'),ty=(C.orig||{}).types||[];
+  $('#m').innerHTML=`<form id="f" style="display:grid;gap:10px"><label>اسم اللعبة<input name="title" required dir="auto"></label><label>القسم<select name="tab">${T.map(t=>`<option value="${t.id}">${E(t.title)}</option>`).join('')}${AC.length>1?'<option value="both">أكونتات PS4 + PS5 (الاتنين)</option>':''}</select></label><label>صورة الغلاف<input name="img" type="file" accept="image/*" required></label><label id="pr">السعر (اختياري)<input name="price" type="number" inputmode="numeric" min="0"></label><div id="op" style="display:grid;gap:10px">${ty.map((x,j)=>`<label>سعر ${E(x)} (سيبه فاضي لو مش متاح)<input name="op${j}" type="number" inputmode="numeric" min="0"></label>`).join('')}<label>المنصة (اختياري)<select name="plat"><option value="">بدون</option><option>PS4</option><option>PS5</option></select></label></div><label id="gr">التصنيف (افصل بفاصلة)<input name="genres" list="gl" dir="auto"></label><label>عدد اللاعبين<input name="players" dir="auto"></label><label>نبذة قصيرة<textarea name="blurb" rows="2" dir="auto"></textarea></label><label>لينك التريلر (يوتيوب)<input name="video" dir="ltr"></label><button class="go">إضافة للقائمة</button><p class="note">بتظهر في الموقع بعد <b>نشر التعديلات</b>، ومعاها صورة المشاركة للواتساب.</p></form>`;
+  const fm=$('#f'),kind=v=>v=='both'?'accounts':(C.tabs.find(t=>t.id==v)||{}).kind,sw=()=>{const k=kind(fm.elements.tab.value);$('#gr').hidden=k=='accounts';$('#pr').hidden=k=='originals';$('#op').hidden=k!='originals'};fm.elements.tab.onchange=sw;sw();
+  fm.onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),title=f.get('title').trim(),sv=f.get('tab'),both=sv=='both',tg=both?AC:[C.tabs.find(x=>x.id==sv)];
+    if(tg.some(t=>items(t).some(x=>key(t,x).toLowerCase()==title.toLowerCase())))return toast('اللعبة دي موجودة بالفعل',1);
+    const vd=f.get('video').trim(),vid=ytid(vd);if(vd&&!vid)return toast('لينك اليوتيوب غير صحيح',1);
+    try{const p=await pack(f.get('img'),'cover'),path='icons-extra/'+slug(tg[0].id,title)+'.'+p.ext,blurb=f.get('blurb').trim();
+      upd(path,p.cover,tg[0].id+'|'+title);
+      for(const t of tg){const og=t.kind=='originals',pl=f.get('plat');shareFiles(t.id,title,title,blurb,p,path,t.id+'|'+title);
+        L.added.push({tab:t.id,title,icon:path,price:og?null:(+f.get('price')||null),...(og?{prices:ty.map((x,j)=>[x,+f.get('op'+j)||0]).filter(a=>a[1]),badges:pl?[pl]:[]}:{}),genres:t.kind=='accounts'?[]:f.get('genres').split(/[,،+]/).map(x=>x.trim()).filter(Boolean),players:f.get('players').trim(),blurb,video:vid,plat:/5/.test(t.title)?'PS5':'PS4',both})}
+      d();e.target.reset();sw();toast('تمت الإضافة — اضغط نشر التعديلات')}catch(x){toast('مشكلة في الصورة',1)}}}
+function drawAcc(){$('#m').innerHTML=`<form id="f" style="display:grid;gap:10px"><label>اسم الملحق<input name="name" required dir="auto"></label><label>السعر<input name="price" type="number" inputmode="numeric" min="0"></label><label>التصنيف<input name="cat" list="cl" dir="auto" placeholder="شواحن / دراعات / ..."></label><label>صورة (اختياري)<input name="img" type="file" accept="image/*"></label><button class="go">إضافة للقائمة</button></form>`;
+  $('#f').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),name=f.get('name').trim();
+    if(C.products.some(x=>x.name.toLowerCase()==name.toLowerCase())||L.padded.some(x=>x.name.toLowerCase()==name.toLowerCase()))return toast('الملحق ده موجود بالفعل',1);
+    const o={name,price:+f.get('price')||null,cat:f.get('cat').trim()||'ملحقات أخرى'},im=f.get('img');
+    if(im&&im.size){try{const p=await pack(im,'contain'),path='products/'+slug('products',name)+'.'+p.ext;upd(path,p.cover,'products|'+name);o.img=path}catch(x){return toast('مشكلة في الصورة',1)}}
+    L.padded.push(o);d();e.target.reset();toast('تمت الإضافة — اضغط نشر التعديلات')}}
+/* ===== إعدادات الموقع ===== */
+function drawSet(){const M=C.tabs.filter(t=>t.kind=='modded'),cf=L.cfg||{};
+  $('#m').innerHTML=`<form id="f" style="display:grid;gap:10px"><label>أرقام الواتساب (رقم في كل سطر)<textarea name="ph" rows="3" dir="ltr">${E(((cf.phones&&cf.phones.length)?cf.phones:C.phones||[]).join('\n'))}</textarea></label>${M.map(t=>`<label>سعر ${E(t.title)} الافتراضي<input name="sp_${t.id}" type="number" inputmode="numeric" min="0" value="${(cf.secprice||{})[t.id]??t.price??''}"></label>`).join('')}<button class="go">حفظ الإعدادات</button><p class="note">سعر القسم بيتطبق على الألعاب اللي ملهاش سعر خاص بيها. الأرقام بتتستخدم في أزرار الواتساب وإرسال الطلب.</p></form>`;
+  $('#f').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target),sp={};M.forEach(t=>{const v=+f.get('sp_'+t.id);if(v&&v!==t.price)sp[t.id]=v});
+    L.cfg={phones:f.get('ph').split('\n').map(x=>x.replace(/\D/g,'')).filter(Boolean),secprice:sp};if(JSON.stringify(L.cfg.phones)==JSON.stringify(C.phones))L.cfg.phones=[];d();toast('اتحفظت — اضغط نشر التعديلات')}}
+lock();
+</script></body></html>
