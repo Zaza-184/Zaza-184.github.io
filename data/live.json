@@ -1,1 +1,18 @@
-{"oos":{},"pstock":{},"videos":{},"added":[]}
+{
+ "oos": {},
+ "pstock": {},
+ "videos": {},
+ "hide": {
+  "accounts": [
+   "Mortal Kombat X",
+   "Call of Duty Modern Warfare II"
+  ],
+  "accounts5": [
+   "Call of Duty Modern Warfare II"
+  ]
+ },
+ "edit": {},
+ "added": [],
+ "padded": [],
+ "cfg": {}
+}
