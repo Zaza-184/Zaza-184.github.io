@@ -3,7 +3,6 @@
   "accounts": [],
   "modded": [
    "ELDEN RING",
-   "Sonic Mania",
    "Team Sonic Racing"
   ]
  },
@@ -26,7 +25,12 @@
     ]
    }
   },
-  "accounts5": {}
+  "accounts5": {},
+  "modded": {
+   "Sonic Mania": {
+    "dn": "Mario"
+   }
+  }
  },
  "added": [
   {
