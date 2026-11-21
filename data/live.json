@@ -46,6 +46,20 @@
    "video": "D-yFWICsEuM",
    "plat": "PS4",
    "both": false
+  },
+  {
+   "tab": "modded",
+   "title": "Blur",
+   "icon": "icons-extra/blur-fde0ae49.webp",
+   "price": 100,
+   "genres": [
+    "سباق"
+   ],
+   "players": "1 - 4",
+   "blurb": "سباقات سيارات مليئة بالسرعة والإثارة! نافس أصدقائك، واستخدم الأسلحة والقدرات الخاصة لتسبق الجميع وتحقق الفوز.",
+   "video": "6UHZLynZFjU",
+   "plat": "PS4",
+   "both": false
   }
  ],
  "padded": [],
