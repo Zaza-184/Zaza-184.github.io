@@ -61,3 +61,7 @@
 - التصنيفات المتاحة: action story openworld horror racing football sports fighting shooter war coop friends online kids girls family relax hard short long cinematic comedy cartoon dark survival zombie stealth puzzle creative platformer superhero soulslike.
 - مثال إضافة لعبة: `['hades','هيديس','action hard']`. الاسم الإنجليزي بحروف صغيرة، والتصنيفات بتتجمّع مع اللي المساعد بيفهمه من النوع وعدد اللاعبين.
 - أسئلة زي الضمان والتوصيل والدفع محتاجة ردك أنت: ضيفها في `faq` بنفس الشكل `['كلمات|مفتاحية','الرد']`.
+
+## الألعاب اللي بتضيفها من لوحة التحكم
+- أي لعبة بتتضاف من اللوحة (أو تتخفي أو تنفذ) المساعد والبحث بيشوفوها فورًا من نفس بيانات الموقع، من غير أي خطوة إضافية.
+- الاسم العربي: لو مفيش صف للعبة في `data/kb.js`، الموقع بيعمل مطابقة صوتية تلقائية للاسم الإنجليزي (مثلًا "هيدس" تلاقي Hades). عشان تظهر باسم عربي مكتوب كويس تحت الاسم، ضيف صف في `data/kb.js`.

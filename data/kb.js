@@ -38,6 +38,8 @@ window.ZKB={t:[
 ['last of us','اخرنا',''],['need for speed','ان اف اس|nfs',''],['ea sports fc','اف سي|fc|فيفا الجديد',''],['wwe','رسلينج',''],['minecraft','ماين',''],['crash','كراش باندكوت',''],
 ['uncharted','انشارتد|انتشارتد',''],['witcher','الويتشر',''],['batman','باتمان|باتمان أركام نايت','superhero stealth action story cinematic'],['playstation plus','بلايستيشن بلس|بلس',''],
 ['grand theft auto','gta|gtav|gta5',''],['call of duty','cod',''],['red dead','rdr|rdr2',''],['last of us','tlou',''],['god of war','gow',''],['mortal kombat','mk11|mk',''],['need for speed','nfs',''],
+['mxgp3','إم إكس جي بي 3|موتوكروس','racing cars'],['mario','ماريو','kids platformer cartoon friends'],['pes 27','بيس 27|بيس مونستر باث','football sports friends'],['blur','بلور','racing cars online friends'],['ازاي تخنق جارك','Neighbours from Hell|Neighbors from Hell|How to Annoy Your Neighbor','comedy'],
+['overcooked','','cooking'],
 ['elden ring','','hard long'],['nioh','','hard'],['sifu','','hard short'],['hollow knight','','hard relax'],['stray','','relax short'],['unravel','','relax short'],['ico','','relax short'],
 ['snake pass','','relax'],['minecraft','','relax long'],['a way out','','short cinematic'],['it takes two','','cinematic comedy long'],['little nightmares','','short dark'],['outlast','','dark'],
 ['layers of fear','','dark short'],['resident evil','','dark'],['hellblade','','dark cinematic short'],['this war of mine','','dark hard'],['the order','','short cinematic'],['uncharted','','cinematic'],
