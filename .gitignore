@@ -1,0 +1,3 @@
+repair.db
+*.db
+__pycache__/
