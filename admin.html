@@ -72,8 +72,13 @@ async function start(){$('#lk').hidden=true;$('#lk').innerHTML='';$('#hd').hidde
 async function put(p,content,msg){let sha;const g=await fetch(U(p)+'?ref='+V.branch,{headers:H()});if(g.ok)sha=(await g.json()).sha;
   const r=await fetch(U(p),{method:'PUT',headers:H(),body:JSON.stringify({message:msg,content,branch:V.branch,sha})});if(!r.ok)throw Error((await r.json().catch(()=>({}))).message||r.status)}
 const snap=()=>JSON.stringify(L),dec=j=>JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
-let LERR=0;
-async function loadLive(){let ok=0;try{const g=await fetch(U('data/live.json')+'?ref='+V.branch+'&t='+Date.now(),{headers:H()});if(g.ok){L={...blank(),...dec(await g.json())};ok=1}else if(g.status==404)ok=1}catch(e){}LERR=!ok;L0=snap();hist=[L0];$('#un').hidden=true;if(LERR)toast('مقدرتش أحمّل بيانات الموقع من GitHub — اقفل اللوحة وافتحها تاني قبل أي نشر',1)}
+let LERR='';
+async function loadLive(){let why='';try{const g=await fetch(U('data/live.json')+'?ref='+V.branch+'&t='+Date.now(),{headers:H()});
+  if(g.ok)L={...blank(),...dec(await g.json())};
+  else if(g.status==404){const r=await fetch('https://api.github.com/repos/'+V.repo+'/branches/'+encodeURIComponent(V.branch),{headers:H()});if(!r.ok)why='المستودع '+V.repo+' أو الفرع '+V.branch+' مش موجود، أو التوكن مالوش وصول ليه ('+r.status+')'}
+  else why=g.status==401?'التوكن غلط أو انتهت صلاحيته (401)':g.status==403?'التوكن مالوش صلاحية Contents أو GitHub حاجبك مؤقتًا (403)':'GitHub رد بخطأ '+g.status}
+ catch(e){why='مفيش اتصال بـ GitHub أو ملف live.json تالف'}
+ LERR=why;L0=snap();hist=[L0];$('#un').hidden=true;if(why)toast('مقدرتش أحمّل بيانات الموقع: '+why,1)}
 function d(){dirty++;hist.push(snap());$('#dc').textContent=dirty;$('#pub').disabled=false;$('#un').hidden=false}
 function undo(){if(hist.length<2)return;hist.pop();L={...blank(),...JSON.parse(hist[hist.length-1])};dirty=Math.max(0,dirty-1);$('#dc').textContent=dirty||'';$('#pub').disabled=!dirty;$('#un').hidden=hist.length<2;go(view);toast('اتراجع عن آخر تعديل')}
 const cn=o=>[Object.values(o.oos).flat().length,Object.values(o.hide).flat().length,Object.values(o.edit).reduce((s,m)=>s+Object.keys(m).length,0),o.added.length+o.padded.length];
@@ -83,7 +88,7 @@ async function drawHist(){$('#m').innerHTML='<p class="note">بيحمّل الس
   try{const r=await fetch(`https://api.github.com/repos/${V.repo}/commits?path=data/live.json&sha=${V.branch}&per_page=20`,{headers:H()});if(!r.ok)throw 0;const cs=await r.json();
     $('#m').innerHTML=`<p class="note">آخر ${cs.length} نشر. <b>استرجاع</b> بيرجّع اللوحة لحالة اللحظة دي، وبتفضل تعديل غير منشور لحد ما تدوس نشر.</p>`+cs.map(c=>`<div class="r"><div class="n" dir="auto">${E(c.commit.message.split('\n')[0])}<small>${E(new Date(c.commit.author.date).toLocaleString('ar-EG'))}</small></div><div class="bt"><button class="sw" data-rs="${c.sha}" style="background:#0b2a58;border-color:var(--b);color:#fff">استرجاع</button></div></div>`).join('')}catch(e){$('#m').innerHTML='<p class="note">تعذّر تحميل السجل</p>'}}
 $('#un').onclick=undo;
-$('#pub').onclick=async()=>{if(LERR)return toast('بيانات الموقع ما اتحمّلتش — اقفل اللوحة وافتحها تاني قبل النشر عشان متتمسحش تعديلاتك',1);const b=$('#pub');b.disabled=true;try{for(const f of pend)await put(f.path,f.content,'ملف: '+f.path);await put('data/live.json',b64(JSON.stringify(L,null,1)),msg());
+$('#pub').onclick=async()=>{if(LERR)return toast('النشر متقفّل: '+LERR,1);const b=$('#pub');b.disabled=true;try{for(const f of pend)await put(f.path,f.content,'ملف: '+f.path);await put('data/live.json',b64(JSON.stringify(L,null,1)),msg());
   pend=[];dirty=0;L0=snap();hist=[L0];$('#dc').textContent='';$('#un').hidden=true;toast('تم النشر ✓ — التعديلات بتظهر في الموقع خلال دقيقة تقريبًا')}catch(e){b.disabled=false;toast('فشل النشر: '+e.message,1)}};
 onbeforeunload=e=>{if(dirty){e.preventDefault();return ''}};
 /* ===== البيانات ===== */
@@ -111,7 +116,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||
     if(t.kind=='products'){L.padded=L.padded.filter(p=>p.name!=k);pend=pend.filter(f=>f.own!=own)}
     else{const e=L.added.find(g=>g.tab==t.id&&g.title==k),bo=e&&e.both;L.added=L.added.filter(g=>!(g.title==k&&(g.tab==t.id||(bo&&g.both))));pend=pend.filter(f=>bo?!(f.own&&f.own.split('|')[1]==k):f.own!=own)}d();list()}});
 function drawStock(){const T=C.tabs;sec=T.some(t=>t.id==sec)?sec:(T[0]||{}).id;
-  $('#m').innerHTML=`<div class="chs">${T.map(t=>`<button data-sec="${t.id}" aria-pressed="${t.id==sec}">${E(t.title)}</button>`).join('')}</div><input id="q" type="search" placeholder="دوّر في كل الأقسام (عربي أو إنجليزي)…" dir="auto" value="${E(q)}"><div id="ls" style="display:grid;gap:8px"></div>`;
+  $('#m').innerHTML=`${LERR?'<div class="r" style="border-color:var(--r)"><div class="n w" dir="auto">بيانات الموقع ما اتحمّلتش من GitHub: '+E(LERR)+'<small class="sc">النشر متقفّل لحد ما تتحل. لو السبب التوكن: اقفل اللوحة ← "نسيت الباسورد / إعداد جديد" ← حط توكن جديد (Contents: Read and write).</small></div></div>':''}<div class="chs">${T.map(t=>`<button data-sec="${t.id}" aria-pressed="${t.id==sec}">${E(t.title)}</button>`).join('')}</div><input id="q" type="search" placeholder="دوّر في كل الأقسام (عربي أو إنجليزي)…" dir="auto" value="${E(q)}"><div id="ls" style="display:grid;gap:8px"></div>`;
   $('#q').oninput=e=>{q=e.target.value;list()};list()}
 const nz=s=>String(s||'').toLowerCase().replace(/[\u064b-\u065f\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim(),
  arc=new Map,
