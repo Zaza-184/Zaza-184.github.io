@@ -6,7 +6,7 @@ window.ZKB={t:[
 ['battlefield','باتلفيلد|باتل فيلد','shooter war online'],['ben 10','بن تن','kids'],['brawlhalla','برولهالا','fighting online friends'],['contra','كونترا','shooter coop friends'],
 ['call of duty','كول أوف ديوتي|كود','shooter war online'],['crash','كراش بانديكوت|كراش','kids girls family platformer'],['cyberpunk','سايبر بانك','openworld story'],
 ['days gone','ديز جون','openworld survival zombie'],['death stranding','ديث ستراندنج','story adventure'],['dirt','ديرت','racing cars'],['driveclub','درايف كلوب','racing cars'],
-['detroit','ديترويت','story adventure'],['ea sports fc','إف سي|فيفا|كورة','football sports friends online'],['fifa','فيفا|كورة','football sports friends online'],
+['detroit','ديترويت','story adventure'],['ea sports fc','إف سي|فيفا|كورة|fifa','football sports friends online'],['fifa','فيفا|كورة|fifa','football sports friends online'],
 ['efootball','إي فوتبول|بيس|كورة','football sports friends online'],['pro evolution','بيس|كورة','football sports friends'],['winning eleven','وينينج إليفن|بيس|كورة','football sports friends'],
 ['ufc','يو إف سي','fighting sports'],['elden ring','إلدن رينج|الدن رينج','soulslike openworld action'],['far cry','فار كراي','shooter openworld'],
 ['ghost of tsushima','جوست أوف تسوشيما|ساموراي','samurai openworld action story'],['god of war','جود أوف وور|جاد أوف وور|كريتوس|اله الحرب','mythology action story'],
