@@ -315,7 +315,7 @@ const SY={'△':'<path d="M12 4 21 20H3z"/>','○':'<circle cx="12" cy="12" r="8
 const sym=(t,n)=>`<svg width="${n}" height="${n}" viewBox="0 0 24 24" fill="none" stroke="var(${t.color})" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SY[t.symbol]||SY['△']}</svg>`;
 const V={};C.tabs.forEach(t=>V[t.id]=K[t.kind](t));
 const NW={};for(const[t,a]of Object.entries(C.new||{}))NW[t]=[...a];for(const[t,a]of Object.entries(L.new||{}))NW[t]=[...(NW[t]||[]),...a];
-const isNew=(t,k)=>(NW[t]||[]).includes(k);C.tabs.forEach(t=>V[t.id].list().forEach(g=>{g._n=isNew(t.id,V[t.id].key(g))}));
+const ND=(C.new_days||30)*864e5,fr=a=>a.ts&&Date.now()-a.ts<ND,isNew=(t,k)=>(NW[t]||[]).includes(k)||(L.added||[]).some(a=>a.tab==t&&a.title==k&&fr(a))||(t=='products'&&(L.padded||[]).some(p=>p.name==k&&fr(p)));C.tabs.forEach(t=>V[t.id].list().forEach(g=>{g._n=isNew(t.id,V[t.id].key(g))}));
 const nbg=(g,h)=>g._n?h.replace(/(<div class="ic[^"]*"[^>]*>)/,'$1<b class="nb">جديد</b>'):h;
 const PS=[['مع صحابك',/على جهاز واحد|محلي|لاعبين اثنين|حتى لاعبين|حتى 4 لاعبين|حتى 8 لاعبين|لاعبين أو أكتر|ألعاب جماعية|تعاوني|أو لاعبين/],['أونلاين',/أونلاين/]];
 const plOf=g=>g.players||(g.items||[]).map(i=>i.players).join(' '),tg=g=>[...(g.genres||[]),...PS.filter(p=>p[1].test(plOf(g))).map(p=>p[0])];

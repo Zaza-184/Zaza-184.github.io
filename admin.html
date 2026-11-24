@@ -156,12 +156,12 @@ function drawGame(){const T=C.tabs.filter(t=>t.kind=='modded'||t.kind=='accounts
     try{const p=await pack(f.get('img'),'cover'),path='icons-extra/'+slug(tg[0].id,title)+'.'+p.ext,blurb=f.get('blurb').trim();
       upd(path,p.cover,tg[0].id+'|'+title);
       for(const t of tg){const og=t.kind=='originals',pl=f.get('plat');shareFiles(t.id,title,title,blurb,p,path,t.id+'|'+title);
-        L.added.push({tab:t.id,title,icon:path,price:og?null:(+f.get('price')||null),...(og?{prices:ty.map((x,j)=>[x,+f.get('op'+j)||0]).filter(a=>a[1]),badges:pl?[pl]:[]}:{}),genres:t.kind=='accounts'?[]:f.get('genres').split(/[,،+]/).map(x=>x.trim()).filter(Boolean),players:f.get('players').trim(),blurb,video:vid,plat:/5/.test(t.title)?'PS5':'PS4',both})}
+        L.added.push({tab:t.id,title,ts:Date.now(),icon:path,price:og?null:(+f.get('price')||null),...(og?{prices:ty.map((x,j)=>[x,+f.get('op'+j)||0]).filter(a=>a[1]),badges:pl?[pl]:[]}:{}),genres:t.kind=='accounts'?[]:f.get('genres').split(/[,،+]/).map(x=>x.trim()).filter(Boolean),players:f.get('players').trim(),blurb,video:vid,plat:/5/.test(t.title)?'PS5':'PS4',both})}
       d();e.target.reset();sw();toast('تمت الإضافة — اضغط نشر التعديلات')}catch(x){toast('مشكلة في الصورة',1)}}}
 function drawAcc(){$('#m').innerHTML=`<form id="f" style="display:grid;gap:10px"><label>اسم الملحق<input name="name" required dir="auto"></label><label>السعر<input name="price" type="number" inputmode="numeric" min="0"></label><label>التصنيف<input name="cat" list="cl" dir="auto" placeholder="شواحن / دراعات / ..."></label><label>صورة (اختياري)<input name="img" type="file" accept="image/*"></label><button class="go">إضافة للقائمة</button></form>`;
   $('#f').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),name=f.get('name').trim();
     if(C.products.some(x=>x.name.toLowerCase()==name.toLowerCase())||L.padded.some(x=>x.name.toLowerCase()==name.toLowerCase()))return toast('الملحق ده موجود بالفعل',1);
-    const o={name,price:+f.get('price')||null,cat:f.get('cat').trim()||'ملحقات أخرى'},im=f.get('img');
+    const o={name,ts:Date.now(),price:+f.get('price')||null,cat:f.get('cat').trim()||'ملحقات أخرى'},im=f.get('img');
     if(im&&im.size){try{const p=await pack(im,'contain'),path='products/'+slug('products',name)+'.'+p.ext;upd(path,p.cover,'products|'+name);o.img=path}catch(x){return toast('مشكلة في الصورة',1)}}
     L.padded.push(o);d();e.target.reset();toast('تمت الإضافة — اضغط نشر التعديلات')}}
 /* ===== إعدادات الموقع ===== */

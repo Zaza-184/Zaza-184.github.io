@@ -151,14 +151,6 @@
   "01007407067": "Zaza",
   "01024686143": "هشام"
  },
- "new": {
-  "accounts": [
-   "Crash Bandicoot 4 Its About Time",
-   "Crash Bandicoot N. Sane Trilogy",
-   "Crash Team Racing Nitro-Fueled"
-  ],
-  "accounts5": [
-   "God of War Ragnarök"
-  ]
- }
+ "new": {},
+ "new_days": 30
 }
