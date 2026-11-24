@@ -20,7 +20,7 @@ label{display:grid;gap:4px;color:var(--m);font-size:14px}
 .r{display:grid;gap:8px;background:var(--p);border:1px solid var(--l);border-radius:12px;padding:8px;animation:up .3s var(--eo) backwards}.r.hid{opacity:.55}
 @keyframes up{from{opacity:0;transform:translateY(8px)}}
 .h{display:flex;gap:10px;align-items:center}.r img,.r .ph{width:46px;height:46px;border-radius:8px;object-fit:cover;flex:none;background:#0b1e3d}
-.r .n{flex:1;min-width:0;unicode-bidi:plaintext;font-weight:700;font-size:14px;overflow-wrap:anywhere}.r small{display:block;color:var(--g);font-weight:400}.r small.w{color:var(--r)}
+.r .n{flex:1;min-width:0;unicode-bidi:plaintext;font-weight:700;font-size:14px;overflow-wrap:anywhere}.r small{display:block;color:var(--g);font-weight:400}.r small.w{color:var(--r)}.r small.sc{color:var(--m);font-size:12px}.r small.nw{display:inline-block;background:var(--g);color:#04241b;border-radius:99px;padding:0 8px;font:800 12px Changa,sans-serif;margin-inline-start:6px}
 .bt{display:flex;gap:6px}.bt button{min-height:44px;padding:0 12px;border:1px solid var(--l);background:#0b1e3d;color:var(--t);border-radius:10px;font:700 13px Changa,sans-serif;cursor:pointer}
 .bt .sw{flex:1;color:#04241b;background:var(--g);border-color:var(--g)}.bt .sw.off{color:#fff;background:var(--r);border-color:var(--r)}.bt .x{color:var(--r)}
 .it{display:grid;grid-template-columns:1fr 44px;gap:6px}.it button{grid-row:1/3;grid-column:2;border:1px solid var(--l);background:#0b1e3d;color:var(--r);border-radius:10px;cursor:pointer}
@@ -63,6 +63,7 @@ function setup(){const hn=location.hostname.split('.'),p=location.pathname.split
 const bump=()=>{clearTimeout(idle);idle=setTimeout(lock,10*60*1000)};['pointerdown','keydown'].forEach(ev=>addEventListener(ev,()=>tok&&bump()));
 async function start(){$('#lk').hidden=true;$('#lk').innerHTML='';$('#hd').hidden=$('#m').hidden=false;bump();
   if(!C){await new Promise(r=>{const s=document.createElement('script');s.src='data/catalog.js?'+Date.now();s.onload=s.onerror=r;document.head.append(s)});
+    await new Promise(r=>{const s=document.createElement('script');s.src='data/kb.js?'+Date.now();s.onload=s.onerror=r;document.head.append(s)});
     C=window.CATALOG||{tabs:[],games:{},originals:[],accts:{},products:[],genres:[]};
     C.tabs=C.tabs.filter(t=>t.kind!='originals');
     $('#dl').innerHTML=`<datalist id="gl">${(C.genres||[]).map(g=>`<option value="${E(g)}">`).join('')}</datalist><datalist id="cl">${[...new Set(C.products.map(p=>p.cat))].map(g=>`<option value="${E(g)}">`).join('')}</datalist>`}
@@ -71,7 +72,8 @@ async function start(){$('#lk').hidden=true;$('#lk').innerHTML='';$('#hd').hidde
 async function put(p,content,msg){let sha;const g=await fetch(U(p)+'?ref='+V.branch,{headers:H()});if(g.ok)sha=(await g.json()).sha;
   const r=await fetch(U(p),{method:'PUT',headers:H(),body:JSON.stringify({message:msg,content,branch:V.branch,sha})});if(!r.ok)throw Error((await r.json().catch(()=>({}))).message||r.status)}
 const snap=()=>JSON.stringify(L),dec=j=>JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
-async function loadLive(){try{const g=await fetch(U('data/live.json')+'?ref='+V.branch+'&t='+Date.now(),{headers:H()});if(g.ok)L={...blank(),...dec(await g.json())}}catch(e){}L0=snap();hist=[L0];$('#un').hidden=true}
+let LERR=0;
+async function loadLive(){let ok=0;try{const g=await fetch(U('data/live.json')+'?ref='+V.branch+'&t='+Date.now(),{headers:H()});if(g.ok){L={...blank(),...dec(await g.json())};ok=1}else if(g.status==404)ok=1}catch(e){}LERR=!ok;L0=snap();hist=[L0];$('#un').hidden=true;if(LERR)toast('مقدرتش أحمّل بيانات الموقع من GitHub — اقفل اللوحة وافتحها تاني قبل أي نشر',1)}
 function d(){dirty++;hist.push(snap());$('#dc').textContent=dirty;$('#pub').disabled=false;$('#un').hidden=false}
 function undo(){if(hist.length<2)return;hist.pop();L={...blank(),...JSON.parse(hist[hist.length-1])};dirty=Math.max(0,dirty-1);$('#dc').textContent=dirty||'';$('#pub').disabled=!dirty;$('#un').hidden=hist.length<2;go(view);toast('اتراجع عن آخر تعديل')}
 const cn=o=>[Object.values(o.oos).flat().length,Object.values(o.hide).flat().length,Object.values(o.edit).reduce((s,m)=>s+Object.keys(m).length,0),o.added.length+o.padded.length];
@@ -81,7 +83,7 @@ async function drawHist(){$('#m').innerHTML='<p class="note">بيحمّل الس
   try{const r=await fetch(`https://api.github.com/repos/${V.repo}/commits?path=data/live.json&sha=${V.branch}&per_page=20`,{headers:H()});if(!r.ok)throw 0;const cs=await r.json();
     $('#m').innerHTML=`<p class="note">آخر ${cs.length} نشر. <b>استرجاع</b> بيرجّع اللوحة لحالة اللحظة دي، وبتفضل تعديل غير منشور لحد ما تدوس نشر.</p>`+cs.map(c=>`<div class="r"><div class="n" dir="auto">${E(c.commit.message.split('\n')[0])}<small>${E(new Date(c.commit.author.date).toLocaleString('ar-EG'))}</small></div><div class="bt"><button class="sw" data-rs="${c.sha}" style="background:#0b2a58;border-color:var(--b);color:#fff">استرجاع</button></div></div>`).join('')}catch(e){$('#m').innerHTML='<p class="note">تعذّر تحميل السجل</p>'}}
 $('#un').onclick=undo;
-$('#pub').onclick=async()=>{const b=$('#pub');b.disabled=true;try{for(const f of pend)await put(f.path,f.content,'ملف: '+f.path);await put('data/live.json',b64(JSON.stringify(L,null,1)),msg());
+$('#pub').onclick=async()=>{if(LERR)return toast('بيانات الموقع ما اتحمّلتش — اقفل اللوحة وافتحها تاني قبل النشر عشان متتمسحش تعديلاتك',1);const b=$('#pub');b.disabled=true;try{for(const f of pend)await put(f.path,f.content,'ملف: '+f.path);await put('data/live.json',b64(JSON.stringify(L,null,1)),msg());
   pend=[];dirty=0;L0=snap();hist=[L0];$('#dc').textContent='';$('#un').hidden=true;toast('تم النشر ✓ — التعديلات بتظهر في الموقع خلال دقيقة تقريبًا')}catch(e){b.disabled=false;toast('فشل النشر: '+e.message,1)}};
 onbeforeunload=e=>{if(dirty){e.preventDefault();return ''}};
 /* ===== البيانات ===== */
@@ -101,7 +103,7 @@ function go(v){if(v=='lock')return lock();view=v;document.querySelectorAll('nav 
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!C)return;
   if(b.dataset.rm!==undefined)return b.closest('.it').remove();if(b.id=='ia')return $('#its').insertAdjacentHTML('beforeend',itRow({}));if(b.dataset.rs)return restore(b.dataset.rs);
   if(b.closest('nav'))return go(b.dataset.v);if(b.dataset.sec){sec=b.dataset.sec;return drawStock()}if(b.id=='ec')return $('#ed').close();
-  const t=C.tabs.find(x=>x.id==sec),i=cur[+b.dataset.n],a=b.dataset.a;if(!a||!i)return;
+  const t=curT[+b.dataset.n],i=cur[+b.dataset.n],a=b.dataset.a;if(!a||!i||!t)return;
   if(a=='t'){if(t.kind=='products'){const on=stock(t,i),k=key(t,i);L.pstock[k]=!on;if(L.pstock[k]===(i._b?i._b.in_stock:true))delete L.pstock[k]}else flip(L.oos,t.id,key(t,i));d();list()}
   else if(a=='h'){flip(L.hide,t.id,key(t,i));d();list()}
   else if(a=='e')edit(t,i);
@@ -109,12 +111,18 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||
     if(t.kind=='products'){L.padded=L.padded.filter(p=>p.name!=k);pend=pend.filter(f=>f.own!=own)}
     else{const e=L.added.find(g=>g.tab==t.id&&g.title==k),bo=e&&e.both;L.added=L.added.filter(g=>!(g.title==k&&(g.tab==t.id||(bo&&g.both))));pend=pend.filter(f=>bo?!(f.own&&f.own.split('|')[1]==k):f.own!=own)}d();list()}});
 function drawStock(){const T=C.tabs;sec=T.some(t=>t.id==sec)?sec:(T[0]||{}).id;
-  $('#m').innerHTML=`<div class="chs">${T.map(t=>`<button data-sec="${t.id}" aria-pressed="${t.id==sec}">${E(t.title)}</button>`).join('')}</div><input id="q" type="search" placeholder="دوّر…" dir="auto" value="${E(q)}"><div id="ls" style="display:grid;gap:8px"></div>`;
+  $('#m').innerHTML=`<div class="chs">${T.map(t=>`<button data-sec="${t.id}" aria-pressed="${t.id==sec}">${E(t.title)}</button>`).join('')}</div><input id="q" type="search" placeholder="دوّر في كل الأقسام (عربي أو إنجليزي)…" dir="auto" value="${E(q)}"><div id="ls" style="display:grid;gap:8px"></div>`;
   $('#q').oninput=e=>{q=e.target.value;list()};list()}
-function list(){const t=C.tabs.find(x=>x.id==sec);if(!t)return;const s=q.trim().toLowerCase();
-  cur=items(t).filter(i=>(key(t,i)+' '+lab(t,i)).toLowerCase().includes(s));
-  $('#ls').innerHTML=cur.map((i,n)=>{const on=stock(t,i),h=hid(t,i),im=ic(i),ed=L.edit[t.id]&&L.edit[t.id][key(t,i)];
-   return `<div class="r${h?' hid':''}"><div class="h">${im?`<img loading="lazy" src="${E(encodeURI(im))}" alt="">`:'<div class="ph"></div>'}<div class="n" dir="auto">${E(lab(t,i))}${h?'<small class="w">مخفية عن الزباين</small>':i._new?'<small>مضافة من اللوحة</small>':ed?'<small>معدّلة</small>':''}</div></div><div class="bt"><button class="sw${on?'':' off'}" data-a="t" data-n="${n}">${on?'متوفر':'نفذت'}</button><button data-a="e" data-n="${n}">✏️ تعديل</button><button data-a="h" data-n="${n}">${h?'إظهار':'إخفاء'}</button>${i._new?`<button class="x" data-a="x" data-n="${n}" aria-label="حذف">✕</button>`:''}</div></div>`}).join('')||'<p class="note">مفيش حاجة هنا لسه</p>'}
+const nz=s=>String(s||'').toLowerCase().replace(/[\u064b-\u065f\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim(),
+ arc=new Map,
+ arOf=n=>{if(arc.has(n))return arc.get(n);const l=String(n||'').toLowerCase(),a=[];for(const r of(window.ZKB&&ZKB.t)||[])if(r[0].length<=4?new RegExp('(^|[^a-z0-9])'+r[0].replace(/[^a-z0-9 ]/g,'')+'([^a-z0-9]|$)').test(l):l.includes(r[0]))a.push(...r[1].split('|'));arc.set(n,a);return a},
+ hay=(t,i)=>{const n=[key(t,i),lab(t,i),...(t.kind=='accounts'&&i.items?i.items.map(x=>x.title):[])];return nz(n.concat(...n.map(arOf)).join(' '))},
+ isNewRow=i=>i._new&&(!i.ts||Date.now()-i.ts<(C.new_days||30)*864e5);
+let curT=[];
+function list(){const s=nz(q),all=!!s,ts=all?C.tabs:C.tabs.filter(x=>x.id==sec);if(!ts.length)return;
+  cur=[];curT=[];ts.forEach(t=>items(t).filter(i=>!all||hay(t,i).includes(s)).forEach(i=>{cur.push(i);curT.push(t)}));
+  $('#ls').innerHTML=cur.map((i,n)=>{const t=curT[n],on=stock(t,i),h=hid(t,i),im=ic(i),ed=L.edit[t.id]&&L.edit[t.id][key(t,i)];
+   return `<div class="r${h?' hid':''}"><div class="h">${im?`<img loading="lazy" src="${E(encodeURI(im))}" alt="">`:'<div class="ph"></div>'}<div class="n" dir="auto">${E(lab(t,i))}${isNewRow(i)?' <small class="nw">جديد</small>':''}${all?'<small class="sc">'+E(t.title)+'</small>':''}${h?'<small class="w">مخفية عن الزباين</small>':i._new?'<small>مضافة من اللوحة</small>':ed?'<small>معدّلة</small>':''}</div></div><div class="bt"><button class="sw${on?'':' off'}" data-a="t" data-n="${n}">${on?'متوفر':'نفذت'}</button><button data-a="e" data-n="${n}">✏️ تعديل</button><button data-a="h" data-n="${n}">${h?'إظهار':'إخفاء'}</button>${i._new?`<button class="x" data-a="x" data-n="${n}" aria-label="حذف">✕</button>`:''}</div></div>`}).join('')||'<p class="note">مفيش حاجة هنا لسه</p>'}
 /* ===== الصور وصفحات المشاركة (واتساب) ===== */
 const pack=(f,fit)=>new Promise((ok,no)=>{const i=new Image;i.onload=()=>{const W=i.width,Hh=i.height,s=Math.min(W,Hh),
   mk=(w,h,fn,ty,qq)=>new Promise(r=>{const c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'));c.toBlob(b=>{const fr=new FileReader;fr.onload=()=>r({b:fr.result.split(',')[1],t:b.type});fr.readAsDataURL(b)},ty,qq)});

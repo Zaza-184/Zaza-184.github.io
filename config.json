@@ -151,6 +151,11 @@
   "01007407067": "Zaza",
   "01024686143": "هشام"
  },
- "new": {},
+ "new": {
+  "modded": [
+   "Blur",
+   "Pes 27 monster path"
+  ]
+ },
  "new_days": 30
 }
