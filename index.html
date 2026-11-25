@@ -315,7 +315,7 @@ const SY={'△':'<path d="M12 4 21 20H3z"/>','○':'<circle cx="12" cy="12" r="8
 const sym=(t,n)=>`<svg width="${n}" height="${n}" viewBox="0 0 24 24" fill="none" stroke="var(${t.color})" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SY[t.symbol]||SY['△']}</svg>`;
 const V={};C.tabs.forEach(t=>V[t.id]=K[t.kind](t));
 const NW={};for(const[t,a]of Object.entries(C.new||{}))NW[t]=[...a];for(const[t,a]of Object.entries(L.new||{}))NW[t]=[...(NW[t]||[]),...a];
-const ND=(C.new_days||30)*864e5,fr=a=>a.ts&&Date.now()-a.ts<ND,isNew=(t,k)=>(NW[t]||[]).includes(k)||(L.added||[]).some(a=>a.tab==t&&a.title==k&&fr(a))||(t=='products'&&(L.padded||[]).some(p=>p.name==k&&fr(p)));C.tabs.forEach(t=>V[t.id].list().forEach(g=>{g._n=isNew(t.id,V[t.id].key(g))}));
+const ND=(C.new_days||30)*864e5,fr=a=>a.ts&&Date.now()-a.ts<ND,isNew=(t,k)=>(NW[t]||[]).some(e=>Array.isArray(e)?e[0]==k&&Date.now()-Date.parse(e[1])<ND:e==k)||(L.added||[]).some(a=>a.tab==t&&a.title==k&&fr(a))||(t=='products'&&(L.padded||[]).some(p=>p.name==k&&fr(p)));C.tabs.forEach(t=>V[t.id].list().forEach(g=>{g._n=isNew(t.id,V[t.id].key(g))}));
 const nbg=(g,h)=>g._n?h.replace(/(<div class="ic[^"]*"[^>]*>)/,'$1<b class="nb">جديد</b>'):h;
 const PS=[['مع صحابك',/على جهاز واحد|محلي|لاعبين اثنين|حتى لاعبين|حتى 4 لاعبين|حتى 8 لاعبين|لاعبين أو أكتر|ألعاب جماعية|تعاوني|أو لاعبين/],['أونلاين',/أونلاين/]];
 const plOf=g=>g.players||(g.items||[]).map(i=>i.players).join(' '),tg=g=>[...(g.genres||[]),...PS.filter(p=>p[1].test(plOf(g))).map(p=>p[0])];
@@ -329,8 +329,7 @@ function draw(a=1){
   $('.tabs [aria-selected=true]').scrollIntoView({inline:'center',block:'nearest'});
   const q=$('#q').value.trim().toLowerCase(),v=V[tab],all=v.list(),G=genres(),act=sel.size>0;
   $('#flt').hidden=!G.length;$('#fb').textContent=sel.size||'';
-  const hit=/[\u0600-\u06ff]/.test(q)&&typeof ZAI!='undefined'&&ZAI.search?(()=>{try{return new Set(ZAI.search(q).flatMap(e=>e.av.filter(a=>a.tab==tab).map(a=>a.key)))}catch(e){return null}})():null,
-  l=all.filter(g=>(((g.title||g.name||'')+' '+v.key(g)).toLowerCase().includes(q)||(hit&&hit.has(v.key(g))))&&(!act||tg(g).some(x=>sel.has(x)))).sort((a,b)=>(!!a.oos-!!b.oos)||(!!b._n-!!a._n));
+  const l=all.filter(g=>((g.title||g.name||'')+' '+v.key(g)).toLowerCase().includes(q)&&(!act||tg(g).some(x=>sel.has(x)))).sort((a,b)=>(!!a.oos-!!b.oos)||(!!b._n-!!a._n));
   CUR=l;ANIM=a;$('#cnt').textContent=(q||act)?`${l.length} من ${all.length}`:`${all.length} ${v.kind=='products'?'منتج':'لعبة'}`;
   if(v.kind=='products'&&!q){const m={};l.forEach(g=>(m[g.cat]=m[g.cat]||[]).push(g));
     $('#out').innerHTML=Object.keys(m).map(c=>`<h2>${E(c)}</h2><div class="grid">${m[c].map(v.html).join('')}</div>`).join('')}

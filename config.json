@@ -153,8 +153,14 @@
  },
  "new": {
   "modded": [
-   "Blur",
-   "Pes 27 monster path"
+   [
+    "Pes 27 monster path",
+    "2026-11-23"
+   ],
+   [
+    "Blur",
+    "2026-11-23"
+   ]
   ]
  },
  "new_days": 30
