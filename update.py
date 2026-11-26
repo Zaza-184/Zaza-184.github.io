@@ -146,7 +146,7 @@ if originals: tabs.append({'id': 'originals', 'title': oc['title'], 'symbol': '�
 tabs += [{'id': t['id'], 'title': t['title'], 'symbol': '○', 'color': '--cir', 'kind': 'accounts'} for t in AP if accts[t['id']]]
 tabs.append({'id': 'products', 'title': 'ملحقات', 'symbol': '✕', 'color': '--crs', 'kind': 'products'})
 out = {'shop': cfg['shop'], 'phones': cfg['phones'], 'pnames': cfg.get('phone_names', {}), 'tabs': tabs, 'games': games, 'originals': originals,
-       'accts': accts, 'products': products, 'new': cfg.get('new', {}), 'new_days': cfg.get('new_days', 30), 'genres': gorder, 'orig': {'title': oc['title'], 'types': oc['types']}}
+       'accts': accts, 'products': products, 'new': cfg.get('new', {}), 'new_days': cfg.get('new_days', 30), 'about': cfg.get('about', {}), 'genres': gorder, 'orig': {'title': oc['title'], 'types': oc['types']}}
 (R / 'data').mkdir(exist_ok=True)
 (R / 'data' / 'catalog.js').write_text('window.CATALOG=' + json.dumps(out, ensure_ascii=False) + ';', 'utf-8')
 
